@@ -1,8 +1,18 @@
 <script lang="ts">
-	import { graphQlClient } from '$lib';
+	import { graphQlClient } from '../../lib';
 	import { onMount } from 'svelte';
 	import { WORD_RANDOM } from '../../graphql/queries/word-random';
-	export let data = {};
+	import type { Word } from '../../graphql/types/word';
+	import type { GuessWord } from '../../graphql/types/guess-word';
+	import { GUESS_WORD_CREATE } from '../../graphql/mutations/guess-word-create';
+	import GuessForm from './GuessForm.svelte';
+	import GuessList from './GuessList.svelte';
+	import { GUESS_WORD_GUESS } from '../../graphql/mutations/guess-word-guess';
+
+	let word: Word = {}
+	let game: GuessWord = {}
+	let wordLoaded: boolean = false 
+	let gameLoaded: boolean = false 
 
 	const lengths = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 	const filter = {
@@ -13,23 +23,70 @@
 		graphQlClient
 			.request(WORD_RANDOM, { filter })
 			.then((result) => {
-				console.log(result);
-				data = result.wordRandom;
+				// console.log(result);
+				word = result.wordRandom;
+				wordLoaded = true
+				gameLoaded = false
+				createGame()
 			})
 			.catch((e) => console.error(e));
 	};
 
+	const createGame = () => {
+		graphQlClient
+			.request(GUESS_WORD_CREATE, { wordId: word.Id })
+			.then(result => {
+				// console.log(result)
+				game = result.guessWordCreate
+				gameLoaded = true
+			})
+			.catch(e => console.error(e))
+	}
+
+	const createGuess = (event: any) => {
+		const { Guess } = event.detail
+		gameLoaded = false
+		graphQlClient
+			.request(GUESS_WORD_GUESS,{ id: game.Id, guess: Guess })
+			.then(result => {
+				game = result.guessWordGuess
+				console.log(game.Word?.Word);
+				gameLoaded = true
+				if (game.Status != 'Playing') wordLoaded = false
+			})
+			.catch(e => console.error(e))
+		
+	}
+
+	const lengthChanged = () => {
+		wordLoaded = false
+		getWord()
+	}
+
 	onMount(() => getWord());
 </script>
 
-<div>
-	{JSON.stringify(data, undefined, 2)}
+{#if gameLoaded}
+	<GuessList {game} />
+{/if}
+
+<div class="form-container">
+	{#if wordLoaded}
+		<GuessForm length={filter.Length} {wordLoaded} on:sendGuess={createGuess} />
+	{/if}
 </div>
 
-<select name="length" id="length" bind:value={filter.Length} on:change={getWord}>
+
+<select name="length" id="length" bind:value={filter.Length} on:change={lengthChanged}>
 	{#each lengths as l}
 		<option value={l}>{l}</option>
 	{/each}
 </select>
 
-<button on:click={getWord}>Get Another Word</button>
+<button on:click={lengthChanged}>Get Another Word</button>
+
+<style>
+	div.form-container {
+		height: 2em;
+	}
+</style>
