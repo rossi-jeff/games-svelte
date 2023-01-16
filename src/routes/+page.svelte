@@ -3,3 +3,4 @@
 
 <div><a href="/hangman">Hangman</a></div>
 <div><a href="/guessword">Guess Word</a></div>
+<div><a href="/codebreaker">Code Breaker</a></div>
