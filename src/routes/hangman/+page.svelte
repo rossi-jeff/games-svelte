@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { graphQlClient } from '$lib';
+	import { alphabet, graphQlClient } from '$lib';
 	import type { Word } from '../../graphql/types/word';
 	import { onMount } from 'svelte';
 	import { WORD_RANDOM } from '../../graphql/queries/word-random';
@@ -7,70 +7,69 @@
 	import { HANG_MAN_CREATE } from '../../graphql/mutations/hang-man-create';
 	import { HANG_MAN_GUESS } from '../../graphql/mutations/hang-man-guess';
 
-	let word: Word = {}
-	let game: HangMan = {}
-	const alphabet: string = 'abcdefghijklmnopqrstuvwxyz'
-	const letters: string[] = alphabet.split('')
-	let display: string[] = []
+	let word: Word = {};
+	let game: HangMan = {};
+	const letters: string[] = alphabet.split('');
+	let display: string[] = [];
 	const filter = {
 		Min: 6,
 		Max: 12
 	};
 
 	const getWord = () => {
-		display = []
+		display = [];
 		graphQlClient
 			.request(WORD_RANDOM, { filter })
 			.then((result) => {
 				word = result.wordRandom;
 				if (word.Length) {
-					display = clearDisplay(word.Length)
+					display = clearDisplay(word.Length);
 				}
-				createGame()
+				createGame();
 			})
 			.catch((e) => console.error(e));
 	};
 
 	const createGame = () => {
 		graphQlClient
-			.request(HANG_MAN_CREATE,{ wordId: word.Id })
-			.then(result => {
-				game = result.hangManCreate
+			.request(HANG_MAN_CREATE, { wordId: word.Id })
+			.then((result) => {
+				game = result.hangManCreate;
 			})
 			.catch((e) => console.error(e));
-	}
+	};
 
 	const checkDisabled = (letter: string) => {
-		if (game && !game.Id) return false
-		if (game.Correct?.includes(letter) || game.Wrong?.includes(letter)) return true
-		return false
-	}
+		if (game && !game.Id) return false;
+		if (game.Correct?.includes(letter) || game.Wrong?.includes(letter)) return true;
+		return false;
+	};
 
 	const guessLetter = (letter: string) => {
 		graphQlClient
-			.request(HANG_MAN_GUESS,{ id: game.Id, guess: letter })
-			.then(result => {
+			.request(HANG_MAN_GUESS, { id: game.Id, guess: letter })
+			.then((result) => {
 				console.log(result);
-				const { Found, Guess } = result.hangManGuess
-				if (Found) setLetterInDisplay(Guess)
-				game = result.hangManGuess?.hangMan
+				const { Found, Guess } = result.hangManGuess;
+				if (Found) setLetterInDisplay(Guess);
+				game = result.hangManGuess?.hangMan;
 				console.log(game);
 			})
 			.catch((e) => console.error(e));
-	}
+	};
 
 	const clearDisplay = (length: number) => {
-		let d: string[] = []
-		for (let i = 0; i < length; i++) d[i] = '_'
-		return d
-	}
+		let d: string[] = [];
+		for (let i = 0; i < length; i++) d[i] = '_';
+		return d;
+	};
 
 	const setLetterInDisplay = (letter: string) => {
-		if (!word.Word?.length) return
+		if (!word.Word?.length) return;
 		for (let i = 0; i < word.Word?.length; i++) {
-			if (word.Word[i] === letter) display[i] = letter
+			if (word.Word[i] === letter) display[i] = letter;
 		}
-	}
+	};
 
 	onMount(() => getWord());
 </script>
@@ -99,9 +98,9 @@
 {#if game && game.Status === 'Playing'}
 	<div class="letter-buttons">
 		{#each letters as letter}
-			<button 
-				disabled={checkDisabled(letter)} 
-				id="button-{letter}" 
+			<button
+				disabled={checkDisabled(letter)}
+				id="button-{letter}"
 				on:click={() => guessLetter(letter)}
 			>
 				{letter.toUpperCase()}
