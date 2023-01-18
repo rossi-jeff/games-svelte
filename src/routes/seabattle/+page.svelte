@@ -17,7 +17,7 @@
 
 	let game: SeaBattle = {};
 	let ship: SeaBattleShip = {};
-	let turn: SeaBattleTurn = {}
+	let turn: SeaBattleTurn = {};
 	let axis: number = 8;
 	let shipsToPlace: string[] = [];
 	let turnModes = Object.values(Navy);
@@ -25,6 +25,13 @@
 	let id: number = 0;
 	let turnLog: string[] = [];
 	let editShips: boolean = false;
+	let playerFired: boolean = false;
+	let opponentFired: boolean = false;
+	let displayPlayerTurns = (turns: SeaBattleTurn[]) => {};
+	let displayOpponentTurns = (turns: SeaBattleTurn[]) => {};
+	let displayPlayerShips = (ships: SeaBattleShip[]) => {};
+	let resetShips = () => {};
+	let playing: boolean = false;
 
 	const setAxis = (event: any) => {
 		axis = event.detail;
@@ -39,6 +46,7 @@
 				if (game.Id) id = game.Id;
 				shipsToPlace = Object.values(ShipType);
 				editShips = true;
+				playing = true;
 			})
 			.catch((e) => console.error(e));
 	};
@@ -47,10 +55,16 @@
 		graphQlClient
 			.request(SEA_BATTLE, { id })
 			.then((result) => {
+				console.log('reloadGame');
 				game = result.seaBattle;
-				setTimeout(() => {
-					game = clone(game)
-				},100)
+				if (game.Turns) {
+					displayPlayerTurns(game.Turns);
+					displayOpponentTurns(game.Turns);
+				}
+				if (game.Ships) {
+					displayPlayerShips(game.Ships);
+					console.log(game.Ships);
+				}
 			})
 			.catch((e) => console.error(e));
 	};
@@ -77,6 +91,7 @@
 			.then((result) => {
 				let idx = shipsToPlace.indexOf(type);
 				if (idx != -1) shipsToPlace.splice(idx, 1);
+				resetShips();
 				editShips = true;
 				ship = result.seaBattleShip;
 				log(`Ship: ${ship.Type} created for  ${ship.Navy} navy at ${new Date()}`);
@@ -86,34 +101,74 @@
 	};
 
 	const playerTurn = (event: any) => {
-		const { horizontal, vertical } = event.detail
-		graphQlClient.request(SEA_BATTLE_TURN,{ 
-			id, 
-			turn: { 
-				Navy: Navy.Player, 
-				GridPoint: { 
-					Horizontal: horizontal, 
-					Vertical: vertical 
-				} 
-			} 
-		})
-		.then(result => {
-			turn = result.seaBattleTurn
-			if (turn.ShipType) {
-				log(`${turn.Navy} Turn: ${turn.Target} ${turn.ShipType} (${turn.GridPoint?.Horizontal}:${turn.GridPoint?.Vertical}) at ${new Date()}`)
-			} else {
-				log(`${turn.Navy} Turn: ${turn.Target} (${turn.GridPoint?.Horizontal}:${turn.GridPoint?.Vertical}) at ${new Date()}`)
-			}
-			reloadGame()
-		})
-		.catch((e) => console.error(e));
-	}
+		const { horizontal, vertical } = event.detail;
+		graphQlClient
+			.request(SEA_BATTLE_TURN, {
+				id,
+				turn: {
+					Navy: Navy.Player,
+					GridPoint: {
+						Horizontal: horizontal,
+						Vertical: vertical
+					}
+				}
+			})
+			.then((result) => {
+				turn = result.seaBattleTurn;
+				if (turn.ShipType) {
+					log(
+						`${turn.Navy} Turn: ${turn.Target} ${turn.ShipType} (${turn.GridPoint?.Horizontal}:${
+							turn.GridPoint?.Vertical
+						}) at ${new Date()}`
+					);
+				} else {
+					log(
+						`${turn.Navy} Turn: ${turn.Target} (${turn.GridPoint?.Horizontal}:${
+							turn.GridPoint?.Vertical
+						}) at ${new Date()}`
+					);
+				}
+				playerFired = true;
+				reloadGame();
+			})
+			.catch((e) => console.error(e));
+	};
 
-	const opponentTurn = () => {}
+	const opponentTurn = () => {
+		graphQlClient
+			.request(SEA_BATTLE_TURN, { id, turn: { Navy: Navy.Opponent } })
+			.then((result) => {
+				turn = result.seaBattleTurn;
+				if (turn.ShipType) {
+					log(
+						`${turn.Navy} Turn: ${turn.Target} ${turn.ShipType} (${turn.GridPoint?.Horizontal}:${
+							turn.GridPoint?.Vertical
+						}) at ${new Date()}`
+					);
+				} else {
+					log(
+						`${turn.Navy} Turn: ${turn.Target} (${turn.GridPoint?.Horizontal}:${
+							turn.GridPoint?.Vertical
+						}) at ${new Date()}`
+					);
+				}
+				opponentFired = true;
+				reloadGame();
+			})
+			.catch((e) => console.error(e));
+	};
 
 	const toggleMode = () => {
-		mode = mode === turnModes[1] ? turnModes[0] : turnModes[1]
-	}
+		mode = mode === turnModes[1] ? turnModes[0] : turnModes[1];
+		playerFired = false;
+		opponentFired = false;
+		reloadGame();
+	};
+
+	const newGame = () => {
+		playing = false;
+		turnLog = [];
+	};
 
 	const log = (message: string) => {
 		// silly kludge to get it to render
@@ -125,18 +180,36 @@
 
 <div>Sea Battle</div>
 
-{#if game && game.Id}
+{#if playing}
 	{#if shipsToPlace.length > 0}
-		<ShipPlacementGrid {axis} {shipsToPlace} {editShips} on:saveShip={createShip} />
+		<ShipPlacementGrid
+			{axis}
+			{shipsToPlace}
+			{editShips}
+			on:saveShip={createShip}
+			bind:resetShipSelect={resetShips}
+		/>
 	{:else}
-		{#if game.Status === 'Playing'}
-			{#if mode === 'Player'}
-				<TargetGrid {game} {axis} on:sendPoint={playerTurn} />
-			{:else}
-				<ShipGrid {game} {axis} />
-			{/if}
+		{#if mode === 'Player' || game.Status === 'Won'}
+			<TargetGrid
+				on:sendPoint={playerTurn}
+				on:nextTurn={toggleMode}
+				bind:displayTurns={displayPlayerTurns}
+				{axis}
+				{playerFired}
+			/>
 		{:else}
-			<button>New Game</button>
+			<ShipGrid
+				bind:displayShips={displayPlayerShips}
+				bind:displayTurns={displayOpponentTurns}
+				on:opponentFire={opponentTurn}
+				on:nextTurn={toggleMode}
+				{axis}
+				{opponentFired}
+			/>
+		{/if}
+		{#if game.Status != 'Playing'}
+			<button on:click={newGame}>New Game</button>
 		{/if}
 	{/if}
 {:else}

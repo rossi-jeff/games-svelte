@@ -103,6 +103,11 @@
 		dispatch('saveShip', ship);
 	};
 
+	export const resetShipSelect = () => {
+		start.type = shipsToPlace[0];
+		highlightShip();
+	};
+
 	onMount(() => highlightShip());
 </script>
 
