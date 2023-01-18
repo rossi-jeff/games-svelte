@@ -5,6 +5,7 @@ export const SEA_BATTLE = gql`
 		seaBattle(Id: $id) {
 			Id
 			Axis
+			Status
 			CreatedAt
 			UpdatedAt
 			Ships {

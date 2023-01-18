@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { SEA_BATTLE_TURN } from '../../graphql/mutations/sea-battle-turn';
 	import { SEA_BATTLE_CREATE } from '../../graphql/mutations/sea-battle-create';
 	import { SEA_BATTLE_SHIP } from '../../graphql/mutations/sea-battle-ship';
 	import { SEA_BATTLE } from '../../graphql/queries/sea-battle';
@@ -9,14 +10,18 @@
 	import { clone, graphQlClient } from '../../lib';
 	import { getShipType } from '../../lib/get-ship-type';
 	import OptionsForm from './OptionsForm.svelte';
+	import ShipGrid from './ShipGrid.svelte';
 	import ShipPlacementGrid from './ShipPlacementGrid.svelte';
+	import TargetGrid from './TargetGrid.svelte';
+	import type { SeaBattleTurn } from '../../graphql/types/sea-battle-turn';
 
 	let game: SeaBattle = {};
 	let ship: SeaBattleShip = {};
+	let turn: SeaBattleTurn = {}
 	let axis: number = 8;
 	let shipsToPlace: string[] = [];
 	let turnModes = Object.values(Navy);
-	let turn: string = turnModes[0];
+	let mode: string = turnModes[1];
 	let id: number = 0;
 	let turnLog: string[] = [];
 	let editShips: boolean = false;
@@ -43,7 +48,9 @@
 			.request(SEA_BATTLE, { id })
 			.then((result) => {
 				game = result.seaBattle;
-				console.log(game);
+				setTimeout(() => {
+					game = clone(game)
+				},100)
 			})
 			.catch((e) => console.error(e));
 	};
@@ -59,7 +66,6 @@
 			.then((result) => {
 				ship = result.seaBattleShip;
 				log(`Ship: ${ship.Type} created for  ${ship.Navy} navy at ${new Date()}`);
-				console.log(ship);
 				createOpponentShip(type);
 			})
 			.catch((e) => console.error(e));
@@ -74,14 +80,43 @@
 				editShips = true;
 				ship = result.seaBattleShip;
 				log(`Ship: ${ship.Type} created for  ${ship.Navy} navy at ${new Date()}`);
-				console.log(ship);
 				reloadGame();
 			})
 			.catch((e) => console.error(e));
 	};
 
+	const playerTurn = (event: any) => {
+		const { horizontal, vertical } = event.detail
+		graphQlClient.request(SEA_BATTLE_TURN,{ 
+			id, 
+			turn: { 
+				Navy: Navy.Player, 
+				GridPoint: { 
+					Horizontal: horizontal, 
+					Vertical: vertical 
+				} 
+			} 
+		})
+		.then(result => {
+			turn = result.seaBattleTurn
+			if (turn.ShipType) {
+				log(`${turn.Navy} Turn: ${turn.Target} ${turn.ShipType} (${turn.GridPoint?.Horizontal}:${turn.GridPoint?.Vertical}) at ${new Date()}`)
+			} else {
+				log(`${turn.Navy} Turn: ${turn.Target} (${turn.GridPoint?.Horizontal}:${turn.GridPoint?.Vertical}) at ${new Date()}`)
+			}
+			reloadGame()
+		})
+		.catch((e) => console.error(e));
+	}
+
+	const opponentTurn = () => {}
+
+	const toggleMode = () => {
+		mode = mode === turnModes[1] ? turnModes[0] : turnModes[1]
+	}
+
 	const log = (message: string) => {
-		// silly kludge to get it to rebder
+		// silly kludge to get it to render
 		let temp = clone(turnLog);
 		temp.unshift(message);
 		turnLog = temp;
@@ -90,18 +125,20 @@
 
 <div>Sea Battle</div>
 
-{#if shipsToPlace.length > 0}
-	<ShipPlacementGrid {axis} {shipsToPlace} {editShips} on:saveShip={createShip} />
-{/if}
-
-{#if turn === 'Player'}
-	<div>target grid</div>
-{:else}
-	<div>ship grid</div>
-{/if}
-
 {#if game && game.Id}
-	<div />
+	{#if shipsToPlace.length > 0}
+		<ShipPlacementGrid {axis} {shipsToPlace} {editShips} on:saveShip={createShip} />
+	{:else}
+		{#if game.Status === 'Playing'}
+			{#if mode === 'Player'}
+				<TargetGrid {game} {axis} on:sendPoint={playerTurn} />
+			{:else}
+				<ShipGrid {game} {axis} />
+			{/if}
+		{:else}
+			<button>New Game</button>
+		{/if}
+	{/if}
 {:else}
 	<OptionsForm on:setAxis={setAxis} on:startGame={createGame} />
 {/if}

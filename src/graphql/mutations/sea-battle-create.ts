@@ -5,6 +5,7 @@ export const SEA_BATTLE_CREATE = gql`
 		seaBattleCreate(Axis: $axis) {
 			Id
 			Axis
+			Status
 			CreatedAt
 			UpdatedAt
 		}
