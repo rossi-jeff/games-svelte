@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { graphQlClient } from '../../lib';
-	import { onMount } from 'svelte';
 	import { WORD_RANDOM } from '../../graphql/queries/word-random';
 	import type { Word } from '../../graphql/types/word';
 	import type { GuessWord } from '../../graphql/types/guess-word';
@@ -62,8 +61,6 @@
 		wordLoaded = false;
 		getWord();
 	};
-
-	onMount(() => getWord());
 </script>
 
 {#if gameLoaded}
@@ -84,7 +81,7 @@
 			{/each}
 		</select>
 
-		<button class="get-word" on:click={lengthChanged}>Get Another Word</button>
+		<button class="get-word" on:click={lengthChanged}>Get Word</button>
 	</div>
 {/if}
 
