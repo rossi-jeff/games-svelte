@@ -1,51 +1,31 @@
 <script lang="ts">
-	import type { GuessWordGuess } from "../../graphql/types/guess-word-guess";
+	import type { GuessWordGuess } from '../../graphql/types/guess-word-guess';
 
-
-    export let guess: GuessWordGuess = {}
+	export let guess: GuessWordGuess = {};
 </script>
 
 {#if guess && guess.Guess && guess.Ratings}
-<div class="guess-container">
-    {#each guess.Ratings as rating,index}
-    <div class={rating.Rating}>{guess.Guess[index]}</div>
-    {/each}
-</div>
+	<div class="guess-container">
+		{#each guess.Ratings as rating, index}
+			<div class={rating.Rating}>{guess.Guess[index].toUpperCase()}</div>
+		{/each}
+	</div>
 {/if}
 
 <style>
-    div.guess-container {
-        margin-bottom: 1em;
-        color: #000;
-    }
-    div.Green {
-        display: inline-block;
-        width: 1.5em;
-        height: 1.5em;
-        border: solid black 1px;
-        margin-right: 1em;
-        text-align: center;
-        background-color: lightgreen;
-        padding-top: 0.25em;
-    }
-    div.Gray {
-        display: inline-block;
-        width: 1.5em;
-        height: 1.5em;
-        border: solid black 1px;
-        margin-right: 1em;
-        text-align: center;
-        background-color: lightgrey;
-        padding-top: 0.25em;
-    }
-    div.Brown {
-        display: inline-block;
-        width: 1.5em;
-        height: 1.5em;
-        border: solid black 1px;
-        margin-right: 1em;
-        text-align: center;
-        background-color: tan;
-        padding-top: 0.25em;
-    }
+	div.guess-container {
+		@apply p-2 flex flex-wrap;
+	}
+	div.guess-container div {
+		@apply h-8 w-8;
+	}
+	div.Green {
+		@apply text-center border rounded border-green-500 bg-green-200 mr-2;
+	}
+	div.Gray {
+		@apply text-center border rounded border-gray-500 bg-gray-200 mr-2;
+	}
+	div.Brown {
+		@apply text-center border rounded border-amber-800 bg-amber-400 mr-2;
+	}
 </style>
