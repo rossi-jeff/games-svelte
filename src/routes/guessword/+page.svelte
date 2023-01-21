@@ -10,6 +10,7 @@
 	import { GameStatus } from '../../graphql/types/game-status';
 	import { Rating } from '../../graphql/types/rating';
 	import { WORD_HINTS } from '../../graphql/queries/word-hints';
+	import HintList from './HintList.svelte';
 
 	let word: Word = {};
 	let game: GuessWord = {};
@@ -136,10 +137,14 @@
 	</div>
 {/if}
 
-<div>
+<div class="hint-check">
 	<input type="checkbox" name="show-hints" id="show-hints" bind:checked={showHints} />
 	<label for="show-hints">Show Hints</label>
 </div>
+
+{#if showHints && hints && hints.length && hints.length < 250}
+	<HintList {hints} />
+{/if}
 
 <style>
 	div.form-container {
@@ -153,5 +158,8 @@
 	}
 	div.new-word button.get-word {
 		@apply h-8 px-2 border rounded bg-blue-200 border-blue-500;
+	}
+	div.hint-check {
+		@apply ml-2;
 	}
 </style>
