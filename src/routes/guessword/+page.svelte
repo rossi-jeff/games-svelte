@@ -8,11 +8,21 @@
 	import GuessList from './GuessList.svelte';
 	import { GUESS_WORD_GUESS } from '../../graphql/mutations/guess-word-guess';
 	import { GameStatus } from '../../graphql/types/game-status';
+	import { Rating } from '../../graphql/types/rating';
+	import { WORD_HINTS } from '../../graphql/queries/word-hints';
 
 	let word: Word = {};
 	let game: GuessWord = {};
 	let wordLoaded: boolean = false;
 	let gameLoaded: boolean = false;
+	let hints: string[] = []
+	type stringOrNUll = string | null
+	let hintFilter: { Length: number, Gray: string[], Green: stringOrNUll[] } = {
+		Length: 5,
+		Gray: [],
+		Green: []
+	}
+	let showHints: boolean = false
 
 	const lengths = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 	const filter = {
@@ -53,12 +63,53 @@
 				console.log(game.Word?.Word);
 				gameLoaded = true;
 				if (game.Status != 'Playing') wordLoaded = false;
+				buildHintFilters()
+				getHints()
 			})
 			.catch((e) => console.error(e));
 	};
 
+	const getHints = () => {
+		if (!showHints) return
+		graphQlClient.request(WORD_HINTS,{ filter: hintFilter })
+			.then(result => {
+				const { Hints } = result.wordHints
+				hints = Hints
+				console.log(hints);	
+			})
+			.catch((e) => console.error(e));
+	}
+
+	const buildHintFilters = () => {
+		hintFilter.Length = filter.Length
+		hintFilter.Green = []
+		for (let i = 0; i < filter.Length; i++) hintFilter.Green[i] = null
+		hintFilter.Gray = []
+		if (game.Guesses && game.Guesses.length) {
+			for (let guess of game.Guesses) {
+				const { Guess, Ratings } = guess
+				if (!Guess || !Ratings) continue
+				let letter: string
+				let rating: Rating | undefined
+				for (let i = 0; i < Guess.length; i++) {
+					letter = Guess[i]
+					rating = Ratings[i].Rating
+					switch (rating) {
+						case Rating.Green:
+							hintFilter.Green[i] = letter
+							break
+						case Rating.Gray:
+							hintFilter.Gray.push(letter)
+							break
+					}
+				}
+			}
+		}
+	}
+
 	const lengthChanged = () => {
 		wordLoaded = false;
+		
 		getWord();
 	};
 </script>
@@ -84,6 +135,11 @@
 		<button class="get-word" on:click={lengthChanged}>Get Word</button>
 	</div>
 {/if}
+
+<div>
+	<input type="checkbox" name="show-hints" id="show-hints" bind:checked={showHints} />
+	<label for="show-hints">Show Hints</label>
+</div>
 
 <style>
 	div.form-container {
