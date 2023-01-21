@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { YachtTurn } from "../../graphql/types/yacht-turn";
+	import DieFace from "./DieFace.svelte";
 
     export let turn: YachtTurn = {}
 </script>
@@ -9,7 +10,9 @@
         <div>Roll Three</div>
         {#each turn.RollThree as Die}
             <div class="die">
-                <div class="die-display">{Die}</div>
+                <div class="die-display">
+                    <DieFace face={Die} />
+                </div>
             </div>
         {/each}
     </div>
@@ -30,8 +33,8 @@
         margin-right: 1em;
         display: inline-block;
     }
-    div.die-display {
-        font-size: large;
-        font-weight: bold;
+    :global(div.die-display img) {
+        width: 4em;
+        height: 4em;
     }
 </style>

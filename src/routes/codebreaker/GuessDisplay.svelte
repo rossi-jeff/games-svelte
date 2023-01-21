@@ -25,13 +25,13 @@
 
 <style>
 	.guess {
-		@apply flex flex-wrap px-2 h-8 py-1;
+		@apply flex flex-wrap px-2 h-10 py-1;
 	}
 	.colors {
-		@apply mr-6 flex flex-wrap;
+		@apply mr-6  flex flex-wrap;
 	}
 	.color {
-		@apply h-6 w-6 border rounded-full mr-2;
+		@apply h-8 w-8 border rounded-full mr-3;
 	}
 	.keys {
 		@apply flex flex-wrap;

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { YachtTurn } from "../../graphql/types/yacht-turn";
     import { createEventDispatcher } from 'svelte'
+	import DieFace from "./DieFace.svelte";
 
     export let turn: YachtTurn = {}
     let Keep: number[] = []
@@ -23,7 +24,9 @@
         <div>Roll One</div>
         {#each turn.RollOne as Die,idx}
             <div class="die">
-                <div class="die-display">{Die}</div>
+                <div class="die-display">
+                    <DieFace face={Die} />
+                </div>
                 <input type="checkbox" 
                     name="die-1-{idx}" 
                     id="die-1-{idx}" 
@@ -53,8 +56,8 @@
         margin-right: 1em;
         display: inline-block;
     }
-    div.die-display {
-        font-size: large;
-        font-weight: bold;
+    :global(div.die-display img) {
+        width: 4em;
+        height: 4em;
     }
 </style>
