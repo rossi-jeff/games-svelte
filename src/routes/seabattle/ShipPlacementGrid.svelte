@@ -134,50 +134,52 @@
 		<tfoot>
 			<tr>
 				<th colspan={axis + 1}>
-					<span>
-						<strong>Ship</strong>
-						<select name="ship" id="ship select" bind:value={start.type} on:change={highlightShip}>
-							{#each shipsToPlace as shipType}
-								<option value={shipType}>{shipType}</option>
-							{/each}
-						</select>
-					</span>
-					<span>
-						<strong>Start</strong>
-						<select
-							name="horizontal"
-							id="horizontal-select"
-							bind:value={start.horizontal}
-							on:change={highlightShip}
-						>
-							{#each horizontal as h}
-								<option value={h}>{h}</option>
-							{/each}
-						</select>
-						<select
-							name="vertical"
-							id="vertical-select"
-							bind:value={start.vertical}
-							on:change={highlightShip}
-						>
-							{#each vertical as v}
-								<option value={v}>{v}</option>
-							{/each}
-						</select>
-					</span>
-					<span>
-						<strong>Direction</strong>
-						<select
-							name="direction"
-							id="direction-select"
-							bind:value={start.direction}
-							on:change={highlightShip}
-						>
-							{#each directions as d}
-								<option value={d}>{d}</option>
-							{/each}
-						</select>
-					</span>
+					<div class="placement-control">
+						<span>
+							<strong>Ship</strong>
+							<select name="ship" id="ship-select" bind:value={start.type} on:change={highlightShip}>
+								{#each shipsToPlace as shipType}
+									<option value={shipType}>{shipType}</option>
+								{/each}
+							</select>
+						</span>
+						<span>
+							<strong>Start</strong>
+							<select
+								name="horizontal"
+								id="horizontal-select"
+								bind:value={start.horizontal}
+								on:change={highlightShip}
+							>
+								{#each horizontal as h}
+									<option value={h}>{h}</option>
+								{/each}
+							</select>
+							<select
+								name="vertical"
+								id="vertical-select"
+								bind:value={start.vertical}
+								on:change={highlightShip}
+							>
+								{#each vertical as v}
+									<option value={v}>{v}</option>
+								{/each}
+							</select>
+						</span>
+						<span>
+							<strong>Direction</strong>
+							<select
+								name="direction"
+								id="direction-select"
+								bind:value={start.direction}
+								on:change={highlightShip}
+							>
+								{#each directions as d}
+									<option value={d}>{d}</option>
+								{/each}
+							</select>
+						</span>
+					</div>
 				</th>
 			</tr>
 			<tr>
@@ -199,28 +201,28 @@
 
 <style>
 	table.placement-grid {
-		border-collapse: collapse;
-		border-top: solid gray 1px;
-		border-left: solid gray 1px;
+		@apply table-auto border-collapse border border-gray-500 mx-2;
 	}
 	table.placement-grid th {
-		background-color: lightblue;
-		font-weight: bold;
+		@apply bg-blue-300 font-bold;
 	}
 	table.placement-grid td,
 	table.placement-grid th {
-		width: 2.5em;
-		height: 2.5em;
-		border-bottom: solid gray 1px;
-		border-right: solid gray 1px;
+		@apply w-12 h-12 border border-b-gray-500 border-r-gray-500;
+	}
+	div.placement-control {
+		@apply flex flex-wrap justify-between;
+	}
+	div.placement-control span {
+		@apply px-2;
 	}
 	select {
-		font-size: small;
+		@apply border border-black rounded py-1 px-1 bg-white text-sm;
 	}
 	:global(.highlighted) {
-		background-color: yellow;
+		@apply bg-yellow-200;
 	}
 	:global(.occupied) {
-		background-color: silver;
+		@apply bg-slate-400;
 	}
 </style>

@@ -93,32 +93,26 @@
 
 <style>
 	table.ship-grid {
-		border-collapse: collapse;
-		border-top: solid gray 1px;
-		border-left: solid gray 1px;
+		@apply table-auto border-collapse border border-gray-500 mx-2;
 	}
 	table.ship-grid th {
-		background-color: lightblue;
-		font-weight: bold;
+		@apply bg-blue-300 font-bold;
 	}
 	table.ship-grid td,
 	table.ship-grid th {
-		width: 2.5em;
-		height: 2.5em;
-		border-bottom: solid gray 1px;
-		border-right: solid gray 1px;
+		@apply w-12 h-12 border border-b-gray-500 border-r-gray-500;
 	}
 	:global(.occupied) {
-		background-color: silver;
+		@apply bg-slate-400;
 	}
 	:global(.Hit),
 	:global(.Sunk) {
-		background-color: lightcoral;
+		@apply bg-red-400;
 	}
 	:global(.Miss) {
-		background-color: skyblue;
+		@apply bg-blue-400;
 	}
 	:global(.highlighted) {
-		background-color: yellow;
+		@apply bg-yellow-200;
 	}
 </style>

@@ -178,8 +178,6 @@
 	};
 </script>
 
-<div>Sea Battle</div>
-
 {#if playing}
 	{#if shipsToPlace.length > 0}
 		<ShipPlacementGrid
