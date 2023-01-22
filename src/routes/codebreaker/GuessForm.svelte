@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getColor } from '../../lib/get-color';
 	import { createEventDispatcher } from 'svelte';
+	import ColorSelect from './ColorSelect.svelte';
 
 	export let availableColors: string[];
 	export let availableColumns: number;
@@ -10,7 +11,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	const checkComplete = (event: any) => {
+	const checkComplete = () => {
 		let valid: boolean = true;
 		for (let color of selected) {
 			if (!color || color.length === 0) valid = false;
@@ -35,16 +36,11 @@
 <div class="guess-form">
 	{#each Array(availableColumns) as _, i (i)}
 		<div id="column-{i}">
-			<select id="select-{i}" bind:value={selected[i]} on:change={checkComplete}>
-				<option value=""> - select - </option>
-				{#each availableColors as color}
-					<option value={color}>{color}</option>
-				{/each}
-			</select>
+			<ColorSelect {availableColors} {i} {selected} on:checkComplete={checkComplete} />
 		</div>
 	{/each}
 	{#if complete}
-		<button class="guess" on:click={createGuess}>Send Guess</button>
+		<button class="guess" on:click={createGuess}>Guess</button>
 	{/if}
 </div>
 
@@ -60,32 +56,5 @@
 	}
 	button.guess:hover {
 		@apply bg-yellow-100;
-	}
-	:global(.Black) {
-		@apply bg-black border-black text-white h-8;
-	}
-	:global(.Blue) {
-		@apply bg-blue-700 border-blue-900 text-white;
-	}
-	:global(.Brown) {
-		@apply bg-amber-800 border-amber-900 text-white;
-	}
-	:global(.Green) {
-		@apply bg-green-500 border-green-900;
-	}
-	:global(.Orange) {
-		@apply bg-orange-400 border-orange-900;
-	}
-	:global(.Purple) {
-		@apply bg-purple-600 border-purple-900;
-	}
-	:global(.Red) {
-		@apply bg-red-600 border-red-900;
-	}
-	:global(.White) {
-		@apply bg-white border-black;
-	}
-	:global(.Yellow) {
-		@apply bg-yellow-300 border-yellow-900;
 	}
 </style>
