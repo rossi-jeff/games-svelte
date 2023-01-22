@@ -1,8 +1,13 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<div class="content">
+	<h3>Welcome Visitor</h3>
+	<div>
+		The page of this site are a collection of games written in typescript. They have a GraphQL
+		backend and most calculations are performed on the server.
+	</div>
+</div>
 
-<div><a href="/hangman">Hangman</a></div>
-<div><a href="/guessword">Guess Word</a></div>
-<div><a href="/codebreaker">Code Breaker</a></div>
-<div><a href="/seabattle">Sea Battle</a></div>
-<div><a href="/yacht">Yacht</a></div>
+<style>
+	div.content {
+		@apply mx-2 my-2;
+	}
+</style>

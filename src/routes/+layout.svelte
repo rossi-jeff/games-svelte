@@ -1,9 +1,11 @@
 <script>
 	import '../app.css';
+	import NavBar from './NavBar.svelte';
+	import PageTitle from './PageTitle.svelte';
 </script>
 
-<div>
-	<a href="/">Home</a>
-</div>
+<PageTitle />
+
+<NavBar />
 
 <slot />
