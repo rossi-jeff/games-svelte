@@ -28,32 +28,35 @@
 </script>
 
 <div class="color-picker">
-	<div class="White">
-		<label for="columns-select">Columns</label>
-		<select id="columns-select" bind:value={column}>
-			{#each columns as col}
-				<option value={col}>{col}</option>
-			{/each}
-		</select>
-	</div>
-	<div class="White">
-		<input
-			type="checkbox"
-			name="select-all"
-			id="select-all"
-			bind:checked={all}
-			on:click={toggleAll}
-		/>
-		<label for="select-all">All</label>
-	</div>
-	{#each colors as color}
-		<div class={color}>
-			<input type="checkbox" id="color-{color}" value={color} bind:group={selected} />
-			<label for="color-{color}">
-				{color}
-			</label>
+	<h2>Game Options</h2>
+	<div class="color-picker-options">
+		<div class="White">
+			<input
+				type="checkbox"
+				name="select-all"
+				id="select-all"
+				bind:checked={all}
+				on:click={toggleAll}
+			/>
+			<label for="select-all">All</label>
 		</div>
-	{/each}
+		{#each colors as color}
+			<div class={color}>
+				<input type="checkbox" id="color-{color}" value={color} bind:group={selected} />
+				<label for="color-{color}">
+					{color}
+				</label>
+			</div>
+		{/each}
+		<div class="White">
+			<label for="columns-select">Columns</label>
+			<select id="columns-select" bind:value={column}>
+				{#each columns as col}
+					<option value={col}>{col}</option>
+				{/each}
+			</select>
+		</div>
+	</div>
 	{#if selected.length > 1}
 		<button class="start-button" on:click={createGame}>Start Game</button>
 	{/if}
@@ -61,9 +64,15 @@
 
 <style>
 	div.color-picker {
-		@apply flex flex-wrap p-2;
+		@apply border border-black rounded p-2 mx-2;
 	}
-	div.color-picker div {
+	h2 {
+		@apply text-lg font-bold;
+	}
+	div.color-picker-options {
+		@apply flex flex-wrap py-2 px-0 mb-2;
+	}
+	div.color-picker-options div {
 		@apply mr-2 py-1 px-2 border rounded h-8;
 	}
 	.Black {

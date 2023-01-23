@@ -16,14 +16,15 @@
 	let game: GuessWord = {};
 	let wordLoaded: boolean = false;
 	let gameLoaded: boolean = false;
-	let hints: string[] = []
-	type stringOrNUll = string | null
-	let hintFilter: { Length: number, Gray: string[], Green: stringOrNUll[] } = {
+	let hints: string[] = [];
+	type stringOrNUll = string | null;
+	let hintFilter: { Length: number; Gray: string[]; Green: stringOrNUll[]; Brown: string[][] } = {
 		Length: 5,
 		Gray: [],
-		Green: []
-	}
-	let showHints: boolean = false
+		Green: [],
+		Brown: []
+	};
+	let showHints: boolean = false;
 
 	const lengths = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 	const filter = {
@@ -64,53 +65,61 @@
 				console.log(game.Word?.Word);
 				gameLoaded = true;
 				if (game.Status != 'Playing') wordLoaded = false;
-				buildHintFilters()
-				getHints()
+				buildHintFilters();
+				getHints();
 			})
 			.catch((e) => console.error(e));
 	};
 
 	const getHints = () => {
-		if (!showHints) return
-		graphQlClient.request(WORD_HINTS,{ filter: hintFilter })
-			.then(result => {
-				const { Hints } = result.wordHints
-				hints = Hints
-				console.log(hints);	
+		if (!showHints) return;
+		graphQlClient
+			.request(WORD_HINTS, { filter: hintFilter })
+			.then((result) => {
+				const { Hints } = result.wordHints;
+				hints = Hints;
+				console.log(`hints: ${hints.length}`);
 			})
 			.catch((e) => console.error(e));
-	}
+	};
 
 	const buildHintFilters = () => {
-		hintFilter.Length = filter.Length
-		hintFilter.Green = []
-		for (let i = 0; i < filter.Length; i++) hintFilter.Green[i] = null
-		hintFilter.Gray = []
+		hintFilter.Length = filter.Length;
+		hintFilter.Green = [];
+		hintFilter.Gray = [];
+		hintFilter.Brown = [];
+		for (let i = 0; i < filter.Length; i++) {
+			hintFilter.Green[i] = null;
+			hintFilter.Brown[i] = [];
+		}
 		if (game.Guesses && game.Guesses.length) {
 			for (let guess of game.Guesses) {
-				const { Guess, Ratings } = guess
-				if (!Guess || !Ratings) continue
-				let letter: string
-				let rating: Rating | undefined
+				const { Guess, Ratings } = guess;
+				if (!Guess || !Ratings) continue;
+				let letter: string;
+				let rating: Rating | undefined;
 				for (let i = 0; i < Guess.length; i++) {
-					letter = Guess[i]
-					rating = Ratings[i].Rating
+					letter = Guess[i];
+					rating = Ratings[i].Rating;
 					switch (rating) {
 						case Rating.Green:
-							hintFilter.Green[i] = letter
-							break
+							hintFilter.Green[i] = letter;
+							break;
 						case Rating.Gray:
-							hintFilter.Gray.push(letter)
-							break
+							hintFilter.Gray.push(letter);
+							break;
+						case Rating.Brown:
+							hintFilter.Brown[i].push(letter);
+							break;
 					}
 				}
 			}
 		}
-	}
+	};
 
 	const lengthChanged = () => {
 		wordLoaded = false;
-		
+
 		getWord();
 	};
 </script>
@@ -137,12 +146,14 @@
 	</div>
 {/if}
 
-<div class="hint-check">
-	<input type="checkbox" name="show-hints" id="show-hints" bind:checked={showHints} />
-	<label for="show-hints">Show Hints</label>
-</div>
+{#if game && game.Status && game.Status === GameStatus.Playing}
+	<div class="hint-check">
+		<input type="checkbox" name="show-hints" id="show-hints" bind:checked={showHints} />
+		<label for="show-hints">Show Hints</label>
+	</div>
+{/if}
 
-{#if showHints && hints && hints.length && hints.length < 250}
+{#if showHints && hints && hints.length && hints.length < 250 && game.Status && game.Status === GameStatus.Playing}
 	<HintList {hints} />
 {/if}
 
@@ -151,7 +162,7 @@
 		@apply mb-2;
 	}
 	div.new-word {
-		@apply mx-2 flex flex-wrap;
+		@apply mx-2 flex flex-wrap border border-black rounded mb-2 p-2;
 	}
 	div.new-word select {
 		@apply border border-black rounded h-8 mr-2;

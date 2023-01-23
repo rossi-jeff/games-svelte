@@ -46,7 +46,7 @@
 
 <style>
 	div.guess-form {
-		@apply flex flex-wrap p-2;
+		@apply flex flex-wrap p-2 border border-black rounded mx-2 mb-2;
 	}
 	div.guess-form div {
 		@apply bg-white border border-black rounded py-1 px-2 mr-2 h-8;

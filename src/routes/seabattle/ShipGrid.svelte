@@ -74,7 +74,7 @@
 				<th>{v}</th>
 				{#each horizontal as h}
 					<td id="S-{h}-{v}">
-						<span></span>
+						<span />
 					</td>
 				{/each}
 			</tr>
@@ -95,14 +95,14 @@
 
 <style>
 	table.ship-grid {
-		@apply table-auto border-collapse border border-gray-500 mx-2;
+		@apply table-auto border-collapse border mx-2;
 	}
 	table.ship-grid th {
 		@apply bg-blue-300 font-bold;
 	}
 	table.ship-grid td,
 	table.ship-grid th {
-		@apply w-12 h-12 border border-b-gray-500 border-r-gray-500 text-center;
+		@apply w-12 h-12 border border-gray-500 text-center;
 	}
 	:global(.occupied) {
 		@apply bg-slate-400;
@@ -116,5 +116,8 @@
 	}
 	:global(.highlighted) {
 		@apply bg-yellow-200;
+	}
+	button:hover {
+		@apply text-red-500;
 	}
 </style>

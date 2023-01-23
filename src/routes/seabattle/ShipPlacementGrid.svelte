@@ -137,7 +137,12 @@
 					<div class="placement-control">
 						<span>
 							<strong>Ship</strong>
-							<select name="ship" id="ship-select" bind:value={start.type} on:change={highlightShip}>
+							<select
+								name="ship"
+								id="ship-select"
+								bind:value={start.type}
+								on:change={highlightShip}
+							>
 								{#each shipsToPlace as shipType}
 									<option value={shipType}>{shipType}</option>
 								{/each}
@@ -201,28 +206,28 @@
 
 <style>
 	table.placement-grid {
-		@apply table-auto border-collapse border border-gray-500 mx-2;
+		@apply table-auto border-collapse border mx-2;
 	}
 	table.placement-grid th {
 		@apply bg-blue-300 font-bold;
 	}
 	table.placement-grid td,
 	table.placement-grid th {
-		@apply w-12 h-12 border border-b-gray-500 border-r-gray-500;
+		@apply w-12 h-12 border border-gray-500;
 	}
 	div.placement-control {
-		@apply flex flex-wrap justify-between;
-	}
-	div.placement-control span {
-		@apply px-2;
+		@apply flex flex-wrap justify-between px-2;
 	}
 	select {
-		@apply border border-black rounded py-1 px-1 bg-white text-sm;
+		@apply border border-black rounded py-1 px-0 bg-white text-sm;
 	}
 	:global(.highlighted) {
 		@apply bg-yellow-200;
 	}
 	:global(.occupied) {
 		@apply bg-slate-400;
+	}
+	button:hover {
+		@apply text-red-500;
 	}
 </style>

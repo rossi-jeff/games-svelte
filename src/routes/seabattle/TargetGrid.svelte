@@ -94,7 +94,7 @@
 				<th>{v}</th>
 				{#each horizontal as h}
 					<td id="T-{h}-{v}">
-						<span></span>
+						<span />
 					</td>
 				{/each}
 			</tr>
@@ -138,17 +138,17 @@
 
 <style>
 	table.target-grid {
-		@apply table-auto border-collapse border border-gray-500 mx-2;
+		@apply table-auto border-collapse border mx-2;
 	}
 	table.target-grid th {
 		@apply bg-blue-300 font-bold;
 	}
 	table.target-grid td,
 	table.target-grid th {
-		@apply w-12 h-12 border border-b-gray-500 border-r-gray-500 text-center;
+		@apply w-12 h-12 border border-gray-500 text-center;
 	}
 	select {
-		@apply border border-black rounded py-1 px-1 bg-white text-sm;
+		@apply border border-black rounded py-1 px-0 bg-white text-sm;
 	}
 	:global(.Hit span),
 	:global(.Sunk span) {
@@ -159,5 +159,8 @@
 	}
 	:global(.highlighted) {
 		@apply bg-yellow-200;
+	}
+	button:hover {
+		@apply text-red-500;
 	}
 </style>
