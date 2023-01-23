@@ -93,7 +93,9 @@
 			<tr>
 				<th>{v}</th>
 				{#each horizontal as h}
-					<td id="T-{h}-{v}" />
+					<td id="T-{h}-{v}">
+						<span></span>
+					</td>
 				{/each}
 			</tr>
 		{/each}
@@ -143,17 +145,17 @@
 	}
 	table.target-grid td,
 	table.target-grid th {
-		@apply w-12 h-12 border border-b-gray-500 border-r-gray-500;
+		@apply w-12 h-12 border border-b-gray-500 border-r-gray-500 text-center;
 	}
 	select {
 		@apply border border-black rounded py-1 px-1 bg-white text-sm;
 	}
-	:global(.Hit),
-	:global(.Sunk) {
-		@apply bg-red-400;
+	:global(.Hit span),
+	:global(.Sunk span) {
+		@apply bg-red-400 rounded-full h-8 w-8 inline-block;
 	}
-	:global(.Miss) {
-		@apply bg-blue-400;
+	:global(.Miss span) {
+		@apply bg-blue-400 rounded-full h-8 w-8 inline-block;
 	}
 	:global(.highlighted) {
 		@apply bg-yellow-200;

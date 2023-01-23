@@ -222,11 +222,9 @@
 
 <style>
 	div.turn-log {
-		min-height: 0;
-		max-height: 6em;
-		overflow-y: auto;
+		@apply overflow-y-auto max-h-20 mx-2 p-2;
 	}
 	div.turn-log div {
-		border-bottom: dotted gray 1px;
+		@apply border border-b-gray-600 border-dashed;
 	}
 </style>
