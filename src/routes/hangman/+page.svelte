@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { alphabet, graphQlClient } from '$lib';
 	import type { Word } from '../../graphql/types/word';
-	import { onMount } from 'svelte';
 	import { WORD_RANDOM } from '../../graphql/queries/word-random';
 	import type { HangMan } from '../../graphql/types/hang-man';
 	import { HANG_MAN_CREATE } from '../../graphql/mutations/hang-man-create';
 	import { HANG_MAN_GUESS } from '../../graphql/mutations/hang-man-guess';
 	import { GameStatus } from '../../graphql/types/game-status';
+	import { userSession, type UserSessionData } from '$lib/user-session';
+	import { get } from 'svelte/store';
 
 	let word: Word = {};
 	let game: HangMan = {};
@@ -17,6 +18,15 @@
 		Max: 12
 	};
 	const parts = ['head', 'body', 'left-arm', 'right-arm', 'left-leg', 'right-leg'];
+
+	let session: UserSessionData = get(userSession);
+
+	const getHeaders = () => {
+		const { Token } =  session
+		let headers: { authorization?: string } = {}
+		if (Token) headers.authorization = `Bearer ${Token}`
+		return headers
+	}
 
 	const getWord = () => {
 		display = [];
@@ -36,7 +46,7 @@
 
 	const createGame = () => {
 		graphQlClient
-			.request(HANG_MAN_CREATE, { wordId: word.Id })
+			.request(HANG_MAN_CREATE, { wordId: word.Id }, getHeaders())
 			.then((result) => {
 				game = result.hangManCreate;
 			})
@@ -51,7 +61,7 @@
 
 	const guessLetter = (letter: string) => {
 		graphQlClient
-			.request(HANG_MAN_GUESS, { id: game.Id, guess: letter })
+			.request(HANG_MAN_GUESS, { id: game.Id, guess: letter }, getHeaders())
 			.then((result) => {
 				console.log(result);
 				const { Found, Guess } = result.hangManGuess;
@@ -116,8 +126,6 @@
 			if (word.Word[i] === letter) display[i] = letter;
 		}
 	};
-
-	onMount(() => getWord());
 </script>
 
 <div id="hangman-graphic">
@@ -160,7 +168,7 @@
 {/if}
 
 {#if game && game.Status != GameStatus.Playing}
-	<button class="new-word" on:click={getWord}>Get Another Word</button>
+	<button class="new-word" on:click={getWord}>Get Word</button>
 {/if}
 
 <style>
@@ -216,7 +224,7 @@
 		@apply flex-none w-8 h-8 border-b border-black mr-2 text-center;
 	}
 	button.new-word {
-		@apply ml-2 p-2 border border-black rounded bg-gray-300;
+		@apply ml-2 p-2 mt-2 border border-black rounded bg-gray-300;
 	}
 	button.new-word:hover {
 		@apply bg-gray-500;

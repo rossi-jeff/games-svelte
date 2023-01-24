@@ -14,6 +14,8 @@
 	import ShipPlacementGrid from './ShipPlacementGrid.svelte';
 	import TargetGrid from './TargetGrid.svelte';
 	import type { SeaBattleTurn } from '../../graphql/types/sea-battle-turn';
+	import { userSession, type UserSessionData } from '$lib/user-session';
+	import { get } from 'svelte/store';
 
 	let game: SeaBattle = {};
 	let ship: SeaBattleShip = {};
@@ -33,13 +35,22 @@
 	let resetShips = () => {};
 	let playing: boolean = false;
 
+	let session: UserSessionData = get(userSession);
+
+	const getHeaders = () => {
+		const { Token } =  session
+		let headers: { authorization?: string } = {}
+		if (Token) headers.authorization = `Bearer ${Token}`
+		return headers
+	}
+
 	const setAxis = (event: any) => {
 		axis = event.detail;
 	};
 
 	const createGame = () => {
 		graphQlClient
-			.request(SEA_BATTLE_CREATE, { axis })
+			.request(SEA_BATTLE_CREATE, { axis }, getHeaders())
 			.then((result) => {
 				game = result.seaBattleCreate;
 				log(`Game started at ${new Date()}`);
@@ -76,7 +87,8 @@
 			.request(SEA_BATTLE_SHIP, {
 				id,
 				ship: { Navy: Navy.Player, Type: getShipType(type), GridPoints: points }
-			})
+			},
+			getHeaders())
 			.then((result) => {
 				ship = result.seaBattleShip;
 				log(`Ship: ${ship.Type} created for  ${ship.Navy} navy at ${new Date()}`);
@@ -87,7 +99,7 @@
 
 	const createOpponentShip = (type: string) => {
 		graphQlClient
-			.request(SEA_BATTLE_SHIP, { id, ship: { Navy: Navy.Opponent, Type: getShipType(type) } })
+			.request(SEA_BATTLE_SHIP, { id, ship: { Navy: Navy.Opponent, Type: getShipType(type) } }, getHeaders())
 			.then((result) => {
 				let idx = shipsToPlace.indexOf(type);
 				if (idx != -1) shipsToPlace.splice(idx, 1);
@@ -112,7 +124,8 @@
 						Vertical: vertical
 					}
 				}
-			})
+			},
+			getHeaders())
 			.then((result) => {
 				turn = result.seaBattleTurn;
 				if (turn.ShipType) {
@@ -136,7 +149,7 @@
 
 	const opponentTurn = () => {
 		graphQlClient
-			.request(SEA_BATTLE_TURN, { id, turn: { Navy: Navy.Opponent } })
+			.request(SEA_BATTLE_TURN, { id, turn: { Navy: Navy.Opponent } }, getHeaders())
 			.then((result) => {
 				turn = result.seaBattleTurn;
 				if (turn.ShipType) {

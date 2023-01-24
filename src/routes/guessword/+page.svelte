@@ -11,6 +11,8 @@
 	import { Rating } from '../../graphql/types/rating';
 	import { WORD_HINTS } from '../../graphql/queries/word-hints';
 	import HintList from './HintList.svelte';
+	import { userSession, type UserSessionData } from '$lib/user-session';
+	import { get } from 'svelte/store';
 
 	let word: Word = {};
 	let game: GuessWord = {};
@@ -31,6 +33,15 @@
 		Length: 5
 	};
 
+	let session: UserSessionData = get(userSession);
+
+	const getHeaders = () => {
+		const { Token } =  session
+		let headers: { authorization?: string } = {}
+		if (Token) headers.authorization = `Bearer ${Token}`
+		return headers
+	}
+
 	const getWord = () => {
 		graphQlClient
 			.request(WORD_RANDOM, { filter })
@@ -46,7 +57,7 @@
 
 	const createGame = () => {
 		graphQlClient
-			.request(GUESS_WORD_CREATE, { wordId: word.Id })
+			.request(GUESS_WORD_CREATE, { wordId: word.Id }, getHeaders())
 			.then((result) => {
 				// console.log(result)
 				game = result.guessWordCreate;
@@ -59,7 +70,7 @@
 		const { Guess } = event.detail;
 		gameLoaded = false;
 		graphQlClient
-			.request(GUESS_WORD_GUESS, { id: game.Id, guess: Guess })
+			.request(GUESS_WORD_GUESS, { id: game.Id, guess: Guess }, getHeaders())
 			.then((result) => {
 				game = result.guessWordGuess;
 				console.log(game.Word?.Word);

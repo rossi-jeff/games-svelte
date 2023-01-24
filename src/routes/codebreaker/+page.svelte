@@ -8,11 +8,22 @@
 	import type { CodeBreakerGuess } from '../../graphql/types/code-breaker-guess';
 	import { CODE_BREAKER } from '../../graphql/queries/code-breaker';
 	import GuessList from './GuessList.svelte';
+	import { userSession, type UserSessionData } from '$lib/user-session';
+	import { get } from 'svelte/store';
 
 	let game: CodeBreaker = {};
 	let guess: CodeBreakerGuess = {};
 	let availableColors: string[] = [];
 	let availableColumns: number;
+
+	let session: UserSessionData = get(userSession);
+
+	const getHeaders = () => {
+		const { Token } =  session
+		let headers: { authorization?: string } = {}
+		if (Token) headers.authorization = `Bearer ${Token}`
+		return headers
+	}
 
 	const createGame = (event: any) => {
 		const { colors, columns, selected } = event.detail;
@@ -21,10 +32,7 @@
 		availableColumns = columns;
 
 		graphQlClient
-			.request(CODE_BREAKER_CREATE, {
-				colors,
-				columns
-			})
+			.request(CODE_BREAKER_CREATE, { colors, columns }, getHeaders())
 			.then((result) => {
 				game = result.codeBreakerCreate;
 			})
@@ -35,7 +43,7 @@
 		const { colors } = event.detail;
 		const id = game.Id;
 		graphQlClient
-			.request(CODE_BREAKER_GUESS, { id, colors })
+			.request(CODE_BREAKER_GUESS, { id, colors }, getHeaders())
 			.then((result) => {
 				guess = result.codeBreakerGuess;
 				if (!game.Guesses) game.Guesses = [];

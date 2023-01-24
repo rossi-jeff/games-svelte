@@ -12,14 +12,25 @@
 	import { YACHT_SCORE_TURN } from '../../graphql/mutations/yacht-score-turn';
 	import { YACHT } from '../../graphql/queries/yacht';
 	import ScoreCard from './ScoreCard.svelte';
+	import { userSession, type UserSessionData } from '$lib/user-session';
+	import { get } from 'svelte/store';
 
 	let game: Yacht = {};
 	let turn: YachtTurn = {};
 	let options: YachtScoreOption[] = [];
 
+	let session: UserSessionData = get(userSession);
+
+	const getHeaders = () => {
+		const { Token } =  session
+		let headers: { authorization?: string } = {}
+		if (Token) headers.authorization = `Bearer ${Token}`
+		return headers
+	}
+
 	const createGame = () => {
 		graphQlClient
-			.request(YACHT_CREATE, {})
+			.request(YACHT_CREATE, {}, getHeaders())
 			.then((result) => {
 				game = result.yachtCreate;
 				console.log(game);
@@ -29,7 +40,7 @@
 
 	const rollDice = (Keep: number[] = []) => {
 		graphQlClient
-			.request(YACHT_ROLL, { id: game.Id, roll: { Keep } })
+			.request(YACHT_ROLL, { id: game.Id, roll: { Keep } }, getHeaders())
 			.then((result) => {
 				const { Turn, Options } = result.yachtRoll;
 				turn = Turn;
@@ -69,7 +80,7 @@
 			.request(YACHT_SCORE_TURN, {
 				id: turn.Id,
 				score: { Category, Dice }
-			})
+			}, getHeaders())
 			.then(() => {
 				turn = {};
 				options = [];
