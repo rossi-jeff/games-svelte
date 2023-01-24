@@ -2,8 +2,11 @@
 	import { page } from '$app/stores';
 	import type { UserPass } from '../graphql/types/user-pass';
 	import UserPassForm from './UserPassForm.svelte';
-	import { userSession, type UserSessionData } from '$lib/user-session';
+	import { blankSession, userSession, type UserSessionData } from '$lib/user-session';
 	import { get } from 'svelte/store';
+	import { graphQlClient } from '$lib';
+	import { USER_LOGIN } from '../graphql/queries/user-login'
+	import { USER_REGISTER } from '../graphql/mutations/user-registar';
 	let routes = [
 		{ name: 'Home', path: '/' },
 		{ name: 'Code Breaker', path: '/codebreaker' },
@@ -41,22 +44,48 @@
 	};
 
 	const registerUser = () => {
+		graphQlClient.request(USER_REGISTER,register)
+			.then(() => {
+				login.UserName = register.UserName
+				closeRegisterDialog()
+			})
+			.catch((e) => console.error(e));
+	};
+
+	const closeRegisterDialog = () => {
 		let modal = document.getElementById('modal');
 		let dialog = document.getElementById('register-dialog');
 		if (modal && dialog) {
 			modal.style.display = 'none';
 			dialog.style.display = 'none';
 		}
-	};
+	}
 
 	const signInUser = () => {
+		graphQlClient.request(USER_LOGIN,login)
+		.then(result => {
+			const { UserName, Token } = result.userLogin
+			const SignedIn: boolean = true
+			userSession.set({ UserName, Token, SignedIn })
+			session = get(userSession);
+			closeSignInDialog()
+		})
+		.catch((e) => console.error(e));
+	};
+
+	const closeSignInDialog = () => {
 		let modal = document.getElementById('modal');
 		let dialog = document.getElementById('login-dialog');
 		if (modal && dialog) {
 			modal.style.display = 'none';
 			dialog.style.display = 'none';
 		}
-	};
+	}
+
+	const signOut = () => {
+		userSession.set(blankSession)
+		session = get(userSession);
+	}
 </script>
 
 <div class="nav-bar">
@@ -69,7 +98,8 @@
 		{#if session.SignedIn}
 			<!-- signed in -->
 			{session.UserName}
-			<button>Change Password</button>
+			<!-- <button>Change Password</button> -->
+			<button on:click={signOut}>Sign Out</button>
 		{:else}
 			<!-- not signed in-->
 			<button on:click={registerDialog}>Register</button>
@@ -86,6 +116,7 @@
 			<UserPassForm user={login} />
 		</div>
 		<div class="modal-controls">
+			<button on:click={closeSignInDialog}>Cancel</button>
 			<button on:click={signInUser}>Sign In</button>
 		</div>
 	</div>
@@ -96,6 +127,7 @@
 			<UserPassForm user={register} />
 		</div>
 		<div class="modal-controls">
+			<button on:click={closeRegisterDialog}>Cancel</button>
 			<button on:click={registerUser}>Register</button>
 		</div>
 	</div>
@@ -138,10 +170,10 @@
 		@apply border bg-blue-800 border-blue-900 text-white rounded p-2;
 	}
 	div.modal-content {
-		@apply p-2 max-h-56 overflow-y-auto;
+		@apply p-0 my-2 max-h-56 overflow-y-auto;
 	}
 	div.modal-controls {
-		@apply p-2 text-right;
+		@apply p-2 flex justify-between;
 	}
 	div.modal-controls button {
 		@apply border bg-blue-800 border-blue-900 text-white rounded p-2;

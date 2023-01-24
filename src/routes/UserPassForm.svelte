@@ -5,7 +5,7 @@
 </script>
 
 <div class="user-pass-form">
-	<div class="relative p-2">
+	<div class="relative mb-2">
 		<input
 			type="text"
 			name="user-name"
@@ -20,7 +20,7 @@
 			>UserName</label
 		>
 	</div>
-	<div class="relative p-2">
+	<div class="relative mb-2">
 		<input
 			type="password"
 			name="pass-word"

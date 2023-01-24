@@ -6,10 +6,10 @@ export type UserSessionData = {
 	SignedIn: boolean;
 };
 
-const blank: UserSessionData = {
+export const blankSession: UserSessionData = {
 	UserName: null,
 	Token: null,
 	SignedIn: false
 };
 
-export const userSession = writable<UserSessionData>(blank);
+export const userSession = writable<UserSessionData>(blankSession);

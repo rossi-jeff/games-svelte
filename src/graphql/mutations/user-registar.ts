@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request';
 
 export const USER_REGISTER = gql`
-	mutation UserRegister($userName: String!, $passWord: String!) {
-		userRegister(UserName: $userName, PassWord: $passWord) {
+	mutation UserRegister($UserName: String!, $PassWord: String!) {
+		userRegister(UserName: $UserName, PassWord: $PassWord) {
 			Id
 			UserName
 			CreatedAt
