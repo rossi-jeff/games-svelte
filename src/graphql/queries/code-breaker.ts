@@ -5,6 +5,8 @@ export const CODE_BREAKER = gql`
 		codeBreaker(Id: $id) {
 			Id
 			Columns
+			Colors
+			Score
 			Status
 			Guesses {
 				Guess {

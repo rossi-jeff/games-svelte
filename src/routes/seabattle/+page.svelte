@@ -38,11 +38,11 @@
 	let session: UserSessionData = get(userSession);
 
 	const getHeaders = () => {
-		const { Token } =  session
-		let headers: { authorization?: string } = {}
-		if (Token) headers.authorization = `Bearer ${Token}`
-		return headers
-	}
+		const { Token } = session;
+		let headers: { authorization?: string } = {};
+		if (Token) headers.authorization = `Bearer ${Token}`;
+		return headers;
+	};
 
 	const setAxis = (event: any) => {
 		axis = event.detail;
@@ -84,11 +84,14 @@
 		const { type, points } = event.detail;
 		editShips = false;
 		graphQlClient
-			.request(SEA_BATTLE_SHIP, {
-				id,
-				ship: { Navy: Navy.Player, Type: getShipType(type), GridPoints: points }
-			},
-			getHeaders())
+			.request(
+				SEA_BATTLE_SHIP,
+				{
+					id,
+					ship: { Navy: Navy.Player, Type: getShipType(type), GridPoints: points }
+				},
+				getHeaders()
+			)
 			.then((result) => {
 				ship = result.seaBattleShip;
 				log(`Ship: ${ship.Type} created for  ${ship.Navy} navy at ${new Date()}`);
@@ -99,7 +102,11 @@
 
 	const createOpponentShip = (type: string) => {
 		graphQlClient
-			.request(SEA_BATTLE_SHIP, { id, ship: { Navy: Navy.Opponent, Type: getShipType(type) } }, getHeaders())
+			.request(
+				SEA_BATTLE_SHIP,
+				{ id, ship: { Navy: Navy.Opponent, Type: getShipType(type) } },
+				getHeaders()
+			)
 			.then((result) => {
 				let idx = shipsToPlace.indexOf(type);
 				if (idx != -1) shipsToPlace.splice(idx, 1);
@@ -115,17 +122,20 @@
 	const playerTurn = (event: any) => {
 		const { horizontal, vertical } = event.detail;
 		graphQlClient
-			.request(SEA_BATTLE_TURN, {
-				id,
-				turn: {
-					Navy: Navy.Player,
-					GridPoint: {
-						Horizontal: horizontal,
-						Vertical: vertical
+			.request(
+				SEA_BATTLE_TURN,
+				{
+					id,
+					turn: {
+						Navy: Navy.Player,
+						GridPoint: {
+							Horizontal: horizontal,
+							Vertical: vertical
+						}
 					}
-				}
-			},
-			getHeaders())
+				},
+				getHeaders()
+			)
 			.then((result) => {
 				turn = result.seaBattleTurn;
 				if (turn.ShipType) {
@@ -220,7 +230,7 @@
 			/>
 		{/if}
 		{#if game.Status != 'Playing'}
-			<button on:click={newGame}>New Game</button>
+			<button class="new-game" on:click={newGame}>New Game</button>
 		{/if}
 	{/if}
 {:else}
@@ -239,5 +249,8 @@
 	}
 	div.turn-log div {
 		@apply border border-b-gray-600 border-dashed;
+	}
+	button.new-game {
+		@apply border border-black rounded p-2 m-2;
 	}
 </style>

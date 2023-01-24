@@ -19,11 +19,11 @@
 	let session: UserSessionData = get(userSession);
 
 	const getHeaders = () => {
-		const { Token } =  session
-		let headers: { authorization?: string } = {}
-		if (Token) headers.authorization = `Bearer ${Token}`
-		return headers
-	}
+		const { Token } = session;
+		let headers: { authorization?: string } = {};
+		if (Token) headers.authorization = `Bearer ${Token}`;
+		return headers;
+	};
 
 	const createGame = (event: any) => {
 		const { colors, columns, selected } = event.detail;
@@ -75,3 +75,19 @@
 		<div class="ml-2">Status: {game.Status}</div>
 	{/if}
 {/if}
+
+<div class="score-link">
+	<a href="/codebreaker/scores">See Top Scores</a>
+</div>
+
+<style>
+	div.score-link {
+		@apply m-2;
+	}
+	div.score-link a {
+		@apply text-blue-700 font-bold no-underline;
+	}
+	div.score-link a:hover {
+		@apply text-blue-900 underline;
+	}
+</style>

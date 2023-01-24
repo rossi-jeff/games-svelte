@@ -36,11 +36,11 @@
 	let session: UserSessionData = get(userSession);
 
 	const getHeaders = () => {
-		const { Token } =  session
-		let headers: { authorization?: string } = {}
-		if (Token) headers.authorization = `Bearer ${Token}`
-		return headers
-	}
+		const { Token } = session;
+		let headers: { authorization?: string } = {};
+		if (Token) headers.authorization = `Bearer ${Token}`;
+		return headers;
+	};
 
 	const getWord = () => {
 		graphQlClient
@@ -62,6 +62,7 @@
 				// console.log(result)
 				game = result.guessWordCreate;
 				gameLoaded = true;
+				hints = [];
 			})
 			.catch((e) => console.error(e));
 	};
@@ -164,7 +165,7 @@
 	</div>
 {/if}
 
-{#if showHints && hints && hints.length && hints.length < 250 && game.Status && game.Status === GameStatus.Playing}
+{#if showHints && hints && hints.length && hints.length < 250 && game && game.Status && game.Status === GameStatus.Playing}
 	<HintList {hints} />
 {/if}
 
