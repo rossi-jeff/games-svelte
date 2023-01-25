@@ -7,6 +7,7 @@ export type HangMan = {
 	Correct?: string[];
 	Wrong?: string[];
 	Status?: GameStatus;
+	Score?: number;
 	CreatedAt?: Date;
 	UpdatedAt?: Date;
 	User?: User;

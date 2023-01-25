@@ -22,11 +22,11 @@
 	let session: UserSessionData = get(userSession);
 
 	const getHeaders = () => {
-		const { Token } =  session
-		let headers: { authorization?: string } = {}
-		if (Token) headers.authorization = `Bearer ${Token}`
-		return headers
-	}
+		const { Token } = session;
+		let headers: { authorization?: string } = {};
+		if (Token) headers.authorization = `Bearer ${Token}`;
+		return headers;
+	};
 
 	const getWord = () => {
 		display = [];
@@ -171,6 +171,10 @@
 	<button class="new-word" on:click={getWord}>Get Word</button>
 {/if}
 
+<div class="score-link">
+	<a href="/hangman/scores">See Top Scores</a>
+</div>
+
 <style>
 	div#hangman-graphic {
 		@apply w-72 h-96 border rounded border-black ml-2 relative p-0;
@@ -237,5 +241,14 @@
 	}
 	:global(.visible) {
 		visibility: visible !important;
+	}
+	div.score-link {
+		@apply m-2;
+	}
+	div.score-link a {
+		@apply text-blue-700 font-bold no-underline;
+	}
+	div.score-link a:hover {
+		@apply text-blue-900 underline;
 	}
 </style>
