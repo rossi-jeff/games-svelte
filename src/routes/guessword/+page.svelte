@@ -46,7 +46,6 @@
 		graphQlClient
 			.request(WORD_RANDOM, { filter })
 			.then((result) => {
-				// console.log(result);
 				word = result.wordRandom;
 				wordLoaded = true;
 				gameLoaded = false;
@@ -56,10 +55,10 @@
 	};
 
 	const createGame = () => {
+		if (!word.Id) return;
 		graphQlClient
 			.request(GUESS_WORD_CREATE, { wordId: word.Id }, getHeaders())
 			.then((result) => {
-				// console.log(result)
 				game = result.guessWordCreate;
 				gameLoaded = true;
 				hints = [];
@@ -74,7 +73,6 @@
 			.request(GUESS_WORD_GUESS, { id: game.Id, guess: Guess }, getHeaders())
 			.then((result) => {
 				game = result.guessWordGuess;
-				console.log(game.Word?.Word);
 				gameLoaded = true;
 				if (game.Status != 'Playing') wordLoaded = false;
 				buildHintFilters();
@@ -169,6 +167,10 @@
 	<HintList {hints} />
 {/if}
 
+<div class="score-link">
+	<a href="/guessword/scores">See Top Scores</a>
+</div>
+
 <style>
 	div.form-container {
 		@apply mb-2;
@@ -184,5 +186,14 @@
 	}
 	div.hint-check {
 		@apply ml-2;
+	}
+	div.score-link {
+		@apply m-2;
+	}
+	div.score-link a {
+		@apply text-blue-700 font-bold no-underline;
+	}
+	div.score-link a:hover {
+		@apply text-blue-900 underline;
 	}
 </style>

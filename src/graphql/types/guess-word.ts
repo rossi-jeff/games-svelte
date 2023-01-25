@@ -6,6 +6,7 @@ import type { Word } from './word';
 export type GuessWord = {
 	Id?: number;
 	Status?: GameStatus;
+	Score?: number;
 	CreatedAt?: Date;
 	UpdatedAt?: Date;
 	Guesses?: GuessWordGuess[];

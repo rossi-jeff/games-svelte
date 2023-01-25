@@ -40,7 +40,7 @@
 
 <style>
 	div.code-breaker-scores {
-		@apply whitespace-pre p-2;
+		@apply mx-2;
 	}
 	h2 {
 		@apply text-xl font-bold;
