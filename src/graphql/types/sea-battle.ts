@@ -7,6 +7,7 @@ export type SeaBattle = {
 	Id?: number;
 	Axis?: number;
 	Status?: GameStatus;
+	Score?: number;
 	CreatedAt?: Date;
 	UpdatedAt?: Date;
 
