@@ -243,6 +243,10 @@
 	{/each}
 </div>
 
+<div class="score-link">
+	<a href="/seabattle/scores">See Top Scores</a>
+</div>
+
 <style>
 	div.turn-log {
 		@apply overflow-y-auto max-h-20 mx-2 p-2;
@@ -252,5 +256,14 @@
 	}
 	button.new-game {
 		@apply border border-black rounded p-2 m-2;
+	}
+	div.score-link {
+		@apply m-2;
+	}
+	div.score-link a {
+		@apply text-blue-700 font-bold no-underline;
+	}
+	div.score-link a:hover {
+		@apply text-blue-900 underline;
 	}
 </style>
