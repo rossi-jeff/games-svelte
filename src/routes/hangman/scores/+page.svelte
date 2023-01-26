@@ -4,9 +4,11 @@
 	import { graphQlClient } from '../../../lib';
 	import { onMount } from 'svelte';
 	import HangManItems from './HangManItems.svelte';
+	import Pagination from '../../Utilities/Pagination.svelte';
 
-	let skip = 0;
-	let take = 10;
+	let skip: number = 0;
+	let take: number = 10;
+	let count: number = 0;
 	let pagedResults: HangManResult = {};
 
 	const getHangMen = () => {
@@ -14,8 +16,21 @@
 			.request(HANG_MEN_PAGINATED, { Skip: skip, Take: take })
 			.then((result) => {
 				pagedResults = result.hangMen;
+				skip = pagedResults.Skip ?? 0;
+				take = pagedResults.Take ?? 10;
+				count = pagedResults.Count ?? 0;
 			})
 			.catch((e) => console.error(e));
+	};
+
+	const pageChanged = (event: any) => {
+		console.log(event.detail);
+		const { PerPage, CurrentPage } = event.detail;
+		if (PerPage && CurrentPage) {
+			take = PerPage;
+			skip = (CurrentPage - 1) * PerPage;
+			getHangMen();
+		}
 	};
 
 	onMount(() => {
@@ -29,6 +44,10 @@
 		<HangManItems items={pagedResults.Items} />
 	{/if}
 </div>
+
+{#if pagedResults && pagedResults.Items && pagedResults.Items.length}
+	<Pagination {take} {count} on:changePage={pageChanged} />
+{/if}
 
 <style>
 	div.hang-man-scores {

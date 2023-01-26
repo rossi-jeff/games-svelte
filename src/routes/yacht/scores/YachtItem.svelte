@@ -6,7 +6,7 @@
 
 <div class="yacht-item">
 	<div class="user">{item.User ? item.User.UserName : 'Anonymous'}</div>
-	<div class="score">{item.Total}</div>
+	<div class="score">{item.Total ?? 0}</div>
 </div>
 
 <style>

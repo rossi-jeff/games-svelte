@@ -5,9 +5,11 @@
 	import { graphQlClient } from '../../../lib';
 	import { onMount } from 'svelte';
 	import CodeBreakerItems from './CodeBreakerItems.svelte';
+	import Pagination from '../../Utilities/Pagination.svelte';
 
-	let skip = 0;
-	let take = 10;
+	let skip: number = 0;
+	let take: number = 10;
+	let count: number = 0;
 	let orderBy = {
 		Score: OrderBy.Desc
 	};
@@ -22,8 +24,21 @@
 			})
 			.then((result) => {
 				pagedResults = result.codeBreakers;
+				take = pagedResults.Take ?? 10;
+				skip = pagedResults.Skip ?? 0;
+				count = pagedResults.Count ?? 0;
 			})
 			.catch((e) => console.error(e));
+	};
+
+	const pageChanged = (event: any) => {
+		console.log(event.detail);
+		const { PerPage, CurrentPage } = event.detail;
+		if (PerPage && CurrentPage) {
+			take = PerPage;
+			skip = (CurrentPage - 1) * PerPage;
+			getCodeBreakers();
+		}
 	};
 
 	onMount(() => {
@@ -37,6 +52,10 @@
 		<CodeBreakerItems items={pagedResults.Items} />
 	{/if}
 </div>
+
+{#if pagedResults && pagedResults.Items && pagedResults.Items.length}
+	<Pagination {take} {count} on:changePage={pageChanged} />
+{/if}
 
 <style>
 	div.code-breaker-scores {
