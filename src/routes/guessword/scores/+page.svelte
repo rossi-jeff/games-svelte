@@ -37,7 +37,4 @@
 	h2 {
 		@apply text-xl font-bold;
 	}
-	div.display {
-		@apply whitespace-pre p-2;
-	}
 </style>

@@ -22,11 +22,11 @@
 	let session: UserSessionData = get(userSession);
 
 	const getHeaders = () => {
-		const { Token } =  session
-		let headers: { authorization?: string } = {}
-		if (Token) headers.authorization = `Bearer ${Token}`
-		return headers
-	}
+		const { Token } = session;
+		let headers: { authorization?: string } = {};
+		if (Token) headers.authorization = `Bearer ${Token}`;
+		return headers;
+	};
 
 	const createGame = () => {
 		graphQlClient
@@ -77,10 +77,14 @@
 			Dice = turn.RollOne;
 		}
 		graphQlClient
-			.request(YACHT_SCORE_TURN, {
-				id: turn.Id,
-				score: { Category, Dice }
-			}, getHeaders())
+			.request(
+				YACHT_SCORE_TURN,
+				{
+					id: turn.Id,
+					score: { Category, Dice }
+				},
+				getHeaders()
+			)
 			.then(() => {
 				turn = {};
 				options = [];
@@ -131,6 +135,10 @@
 	</div>
 {/if}
 
+<div class="score-link">
+	<a href="/yacht/scores">See Top Scores</a>
+</div>
+
 <style>
 	div.first-roll {
 		@apply m-2;
@@ -145,5 +153,14 @@
 	div.first-roll button:hover,
 	div.new-game button:hover {
 		@apply bg-blue-200;
+	}
+	div.score-link {
+		@apply m-2;
+	}
+	div.score-link a {
+		@apply text-blue-700 font-bold no-underline;
+	}
+	div.score-link a:hover {
+		@apply text-blue-900 underline;
 	}
 </style>
