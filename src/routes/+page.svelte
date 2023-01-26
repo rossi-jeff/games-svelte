@@ -1,8 +1,55 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<div class="content">
+	<h3>Welcome Visitor</h3>
+	<div>
+		The pages of this site are a collection of games written in typescript. They have a GraphQL
+		backend and most calculations are performed on the server.
+	</div>
+	<div>
+		The site itself was constructed using the following tools and resources:
+		<ul>
+			<li>
+				<a href="https://kit.svelte.dev/">Svelte Kit</a> -
+				<i
+					>SvelteKit is built on Svelte, a UI framework that uses a compiler to let you write
+					breathtakingly concise components that do minimal work in the browser, using languages you
+					already know — HTML, CSS and JavaScript. It's a love letter to web development.</i
+				> (site documentation)
+			</li>
+			<li>
+				<a href="https://tailwindcss.com/">Tailwind CSS</a> -
+				<i
+					>A utility-first CSS framework packed with classes like flex, pt-4, text-center and
+					rotate-90 that can be composed to build any design, directly in your markup.</i
+				> (site documentation)
+			</li>
+			<li>Dice images downloaded from <a href="https://css.gg/">CSS.GG</a></li>
+		</ul>
+	</div>
+	<div>
+		Take some time to play a few games and think about the problem solving skills involved in
+		constucting them.
+	</div>
+	<div>The source code for both the games site and the GraphQL API are available upon request.</div>
+</div>
 
-<div><a href="/hangman">Hangman</a></div>
-<div><a href="/guessword">Guess Word</a></div>
-<div><a href="/codebreaker">Code Breaker</a></div>
-<div><a href="/seabattle">Sea Battle</a></div>
-<div><a href="/yacht">Yacht</a></div>
+<style>
+	div.content {
+		@apply mx-2 my-2;
+	}
+	h3 {
+		@apply font-bold text-lg mb-2;
+	}
+	div {
+		@apply mb-2;
+	}
+	ul {
+		@apply list-disc list-inside;
+	}
+	a,
+	a:visited {
+		@apply text-blue-700 no-underline font-bold;
+	}
+	a:hover {
+		@apply text-red-700 underline;
+	}
+</style>

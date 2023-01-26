@@ -5,8 +5,10 @@ export const GUESS_WORD_CREATE = gql`
 		guessWordCreate(WordId: $wordId) {
 			Id
 			Status
+			Score
 			Word {
 				Word
+				Length
 			}
 			Guesses {
 				Guess

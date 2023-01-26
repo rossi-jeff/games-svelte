@@ -5,8 +5,10 @@ export const GUESS_WORD_GUESS = gql`
 		guessWordGuess(Id: $id, Guess: $guess) {
 			Id
 			Status
+			Score
 			Word {
 				Word
+				Length
 			}
 			Guesses {
 				Guess

@@ -6,6 +6,8 @@ export type CodeBreaker = {
 	Id?: number;
 	Status?: GameStatus;
 	Columns?: number;
+	Colors?: number;
+	Score?: number;
 	CreatedAt?: Date;
 	UpdatedAt?: Date;
 	User?: User;

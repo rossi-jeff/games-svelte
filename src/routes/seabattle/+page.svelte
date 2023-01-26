@@ -14,6 +14,8 @@
 	import ShipPlacementGrid from './ShipPlacementGrid.svelte';
 	import TargetGrid from './TargetGrid.svelte';
 	import type { SeaBattleTurn } from '../../graphql/types/sea-battle-turn';
+	import { userSession, type UserSessionData } from '$lib/user-session';
+	import { get } from 'svelte/store';
 
 	let game: SeaBattle = {};
 	let ship: SeaBattleShip = {};
@@ -33,13 +35,22 @@
 	let resetShips = () => {};
 	let playing: boolean = false;
 
+	let session: UserSessionData = get(userSession);
+
+	const getHeaders = () => {
+		const { Token } = session;
+		let headers: { authorization?: string } = {};
+		if (Token) headers.authorization = `Bearer ${Token}`;
+		return headers;
+	};
+
 	const setAxis = (event: any) => {
 		axis = event.detail;
 	};
 
 	const createGame = () => {
 		graphQlClient
-			.request(SEA_BATTLE_CREATE, { axis })
+			.request(SEA_BATTLE_CREATE, { axis }, getHeaders())
 			.then((result) => {
 				game = result.seaBattleCreate;
 				log(`Game started at ${new Date()}`);
@@ -73,10 +84,14 @@
 		const { type, points } = event.detail;
 		editShips = false;
 		graphQlClient
-			.request(SEA_BATTLE_SHIP, {
-				id,
-				ship: { Navy: Navy.Player, Type: getShipType(type), GridPoints: points }
-			})
+			.request(
+				SEA_BATTLE_SHIP,
+				{
+					id,
+					ship: { Navy: Navy.Player, Type: getShipType(type), GridPoints: points }
+				},
+				getHeaders()
+			)
 			.then((result) => {
 				ship = result.seaBattleShip;
 				log(`Ship: ${ship.Type} created for  ${ship.Navy} navy at ${new Date()}`);
@@ -87,7 +102,11 @@
 
 	const createOpponentShip = (type: string) => {
 		graphQlClient
-			.request(SEA_BATTLE_SHIP, { id, ship: { Navy: Navy.Opponent, Type: getShipType(type) } })
+			.request(
+				SEA_BATTLE_SHIP,
+				{ id, ship: { Navy: Navy.Opponent, Type: getShipType(type) } },
+				getHeaders()
+			)
 			.then((result) => {
 				let idx = shipsToPlace.indexOf(type);
 				if (idx != -1) shipsToPlace.splice(idx, 1);
@@ -103,16 +122,20 @@
 	const playerTurn = (event: any) => {
 		const { horizontal, vertical } = event.detail;
 		graphQlClient
-			.request(SEA_BATTLE_TURN, {
-				id,
-				turn: {
-					Navy: Navy.Player,
-					GridPoint: {
-						Horizontal: horizontal,
-						Vertical: vertical
+			.request(
+				SEA_BATTLE_TURN,
+				{
+					id,
+					turn: {
+						Navy: Navy.Player,
+						GridPoint: {
+							Horizontal: horizontal,
+							Vertical: vertical
+						}
 					}
-				}
-			})
+				},
+				getHeaders()
+			)
 			.then((result) => {
 				turn = result.seaBattleTurn;
 				if (turn.ShipType) {
@@ -136,7 +159,7 @@
 
 	const opponentTurn = () => {
 		graphQlClient
-			.request(SEA_BATTLE_TURN, { id, turn: { Navy: Navy.Opponent } })
+			.request(SEA_BATTLE_TURN, { id, turn: { Navy: Navy.Opponent } }, getHeaders())
 			.then((result) => {
 				turn = result.seaBattleTurn;
 				if (turn.ShipType) {
@@ -178,8 +201,6 @@
 	};
 </script>
 
-<div>Sea Battle</div>
-
 {#if playing}
 	{#if shipsToPlace.length > 0}
 		<ShipPlacementGrid
@@ -209,7 +230,7 @@
 			/>
 		{/if}
 		{#if game.Status != 'Playing'}
-			<button on:click={newGame}>New Game</button>
+			<button class="new-game" on:click={newGame}>New Game</button>
 		{/if}
 	{/if}
 {:else}
@@ -222,13 +243,27 @@
 	{/each}
 </div>
 
+<div class="score-link">
+	<a href="/seabattle/scores">See Top Scores</a>
+</div>
+
 <style>
 	div.turn-log {
-		min-height: 0;
-		max-height: 6em;
-		overflow-y: auto;
+		@apply overflow-y-auto max-h-20 mx-2 p-2;
 	}
 	div.turn-log div {
-		border-bottom: dotted gray 1px;
+		@apply border border-b-gray-600 border-dashed;
+	}
+	button.new-game {
+		@apply border border-black rounded p-2 m-2;
+	}
+	div.score-link {
+		@apply m-2;
+	}
+	div.score-link a {
+		@apply text-blue-700 font-bold no-underline;
+	}
+	div.score-link a:hover {
+		@apply text-blue-900 underline;
 	}
 </style>

@@ -24,48 +24,46 @@
 {/if}
 
 <style>
+	.guess {
+		@apply flex flex-wrap px-2 h-10 py-1;
+	}
 	.colors {
-		margin-right: 2em;
+		@apply mr-6  flex flex-wrap;
 	}
 	.color {
-		display: inline-block;
-		width: 4em;
-		height: 2em;
-		border: solid black 1px;
-		margin-right: 1em;
+		@apply h-8 w-8 border rounded-full mr-3;
+	}
+	.keys {
+		@apply flex flex-wrap;
 	}
 	.key {
-		display: inline-block;
-		width: 1em;
-		height: 2em;
-		border: solid black 1px;
-		margin-right: 1em;
+		@apply h-4 w-4 border rounded-full mr-1 mb-2;
 	}
 	.Black {
-		background-color: black;
+		@apply bg-black border-black;
 	}
 	.Blue {
-		background-color: blue;
+		@apply bg-blue-700 border-blue-900;
 	}
 	.Brown {
-		background-color: brown;
+		@apply bg-amber-800 border-amber-900;
 	}
 	.Green {
-		background-color: green;
+		@apply bg-green-500 border-green-900;
 	}
 	.Orange {
-		background-color: orange;
+		@apply bg-orange-400 border-orange-900;
 	}
 	.Purple {
-		background-color: purple;
+		@apply bg-purple-600 border-purple-900;
 	}
 	.Red {
-		background-color: red;
+		@apply bg-red-600 border-red-900;
 	}
 	.White {
-		background-color: white;
+		@apply bg-white border-black;
 	}
 	.Yellow {
-		background-color: yellow;
+		@apply bg-yellow-300 border-yellow-900;
 	}
 </style>
