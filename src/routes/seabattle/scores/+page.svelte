@@ -5,6 +5,7 @@
 	import type { SeaBattleResult } from '../../../graphql/types/sea-battle-result';
 	import Pagination from '../../Utilities/Pagination.svelte';
 	import SeaBattleItems from './SeaBattleItems.svelte';
+	import { Loader } from '$lib/loader';
 
 	let skip: number = 0;
 	let take: number = 10;
@@ -12,6 +13,7 @@
 	let pagedResults: SeaBattleResult = {};
 
 	const getSeaBattles = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(SEA_BATTLES_PAGINATED, { Skip: skip, Take: take })
 			.then((result) => {
@@ -19,6 +21,7 @@
 				skip = pagedResults.Skip ?? 0;
 				take = pagedResults.Take ?? 10;
 				count = pagedResults.Count ?? 0;
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};

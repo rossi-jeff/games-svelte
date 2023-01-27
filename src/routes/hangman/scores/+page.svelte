@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import HangManItems from './HangManItems.svelte';
 	import Pagination from '../../Utilities/Pagination.svelte';
+	import { Loader } from '$lib/loader';
 
 	let skip: number = 0;
 	let take: number = 10;
@@ -12,6 +13,7 @@
 	let pagedResults: HangManResult = {};
 
 	const getHangMen = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(HANG_MEN_PAGINATED, { Skip: skip, Take: take })
 			.then((result) => {
@@ -19,6 +21,7 @@
 				skip = pagedResults.Skip ?? 0;
 				take = pagedResults.Take ?? 10;
 				count = pagedResults.Count ?? 0;
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};

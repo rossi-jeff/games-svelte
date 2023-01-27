@@ -3,9 +3,11 @@
 	import type { SeaBattleShip } from '../../graphql/types/sea-battle-ship';
 	import type { SeaBattleTurn } from '../../graphql/types/sea-battle-turn';
 	import { createEventDispatcher } from 'svelte';
+	import { GameStatus } from '../../graphql/types/game-status';
 
 	export let axis: number = 8;
 	export let opponentFired: boolean = false;
+	export let status: GameStatus = GameStatus.Playing;
 
 	const H = alphabet.toUpperCase().split('');
 	const V = [...Array(26).keys()].map((x) => x + 1);
@@ -83,10 +85,12 @@
 	<tfoot>
 		<tr>
 			<th colspan={axis + 1}>
-				{#if opponentFired}
-					<button on:click={nextTurn}>Continue</button>
-				{:else}
-					<button on:click={opponentFire}>Opponent Turn</button>
+				{#if status === GameStatus.Playing}
+					{#if opponentFired}
+						<button on:click={nextTurn}>Continue</button>
+					{:else}
+						<button on:click={opponentFire}>Opponent Turn</button>
+					{/if}
 				{/if}
 			</th>
 		</tr>

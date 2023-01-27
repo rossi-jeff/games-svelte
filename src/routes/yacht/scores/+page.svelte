@@ -5,6 +5,7 @@
 	import { graphQlClient } from '../../../lib';
 	import Pagination from '../../Utilities/Pagination.svelte';
 	import YachtItems from './YachtItems.svelte';
+	import { Loader } from '$lib/loader';
 
 	let skip: number = 0;
 	let take: number = 10;
@@ -12,6 +13,7 @@
 	let pagedResults: YachtResult = {};
 
 	const getYachts = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(YACHTS_PAGINATED, { Skip: skip, Take: take })
 			.then((result) => {
@@ -19,6 +21,7 @@
 				skip = pagedResults.Skip ?? 0;
 				take = pagedResults.Take ?? 10;
 				count = pagedResults.Count ?? 0;
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};

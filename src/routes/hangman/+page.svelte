@@ -8,6 +8,7 @@
 	import { GameStatus } from '../../graphql/types/game-status';
 	import { userSession, type UserSessionData } from '$lib/user-session';
 	import { get } from 'svelte/store';
+	import { Loader } from '../../lib/loader';
 
 	let word: Word = {};
 	let game: HangMan = {};
@@ -29,6 +30,7 @@
 	};
 
 	const getWord = () => {
+		Loader.set({ loading: true });
 		display = [];
 		graphQlClient
 			.request(WORD_RANDOM, { filter })
@@ -38,6 +40,7 @@
 					display = clearDisplay(word.Length);
 					clearLetterClass();
 					clearHangMan();
+					Loader.set({ loading: false });
 				}
 				createGame();
 			})
@@ -45,10 +48,12 @@
 	};
 
 	const createGame = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(HANG_MAN_CREATE, { wordId: word.Id }, getHeaders())
 			.then((result) => {
 				game = result.hangManCreate;
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
@@ -60,6 +65,7 @@
 	};
 
 	const guessLetter = (letter: string) => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(HANG_MAN_GUESS, { id: game.Id, guess: letter }, getHeaders())
 			.then((result) => {
@@ -69,6 +75,7 @@
 				setLetterClass(Found, letter);
 				game = result.hangManGuess?.hangMan;
 				if (!Found) drawHangMan();
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
