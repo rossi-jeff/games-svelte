@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 	import CodeBreakerItems from './CodeBreakerItems.svelte';
 	import Pagination from '../../Utilities/Pagination.svelte';
+	import { Loader } from '$lib/loader';
 
 	let skip: number = 0;
 	let take: number = 10;
@@ -16,6 +17,7 @@
 	let pagedResults: CodeBreakersPaginated = {};
 
 	const getCodeBreakers = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(CODE_BREAKERS_PAGINATED, {
 				OrderBy: orderBy,
@@ -27,6 +29,7 @@
 				take = pagedResults.Take ?? 10;
 				skip = pagedResults.Skip ?? 0;
 				count = pagedResults.Count ?? 0;
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
