@@ -14,6 +14,7 @@
 	import ScoreCard from './ScoreCard.svelte';
 	import { userSession, type UserSessionData } from '$lib/user-session';
 	import { get } from 'svelte/store';
+	import { Loader } from '../../lib/loader';
 
 	let game: Yacht = {};
 	let turn: YachtTurn = {};
@@ -29,22 +30,25 @@
 	};
 
 	const createGame = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(YACHT_CREATE, {}, getHeaders())
 			.then((result) => {
 				game = result.yachtCreate;
-				console.log(game);
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
 
 	const rollDice = (Keep: number[] = []) => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(YACHT_ROLL, { id: game.Id, roll: { Keep } }, getHeaders())
 			.then((result) => {
 				const { Turn, Options } = result.yachtRoll;
 				turn = Turn;
 				options = Options;
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
@@ -76,6 +80,7 @@
 		} else if (turn.RollOne) {
 			Dice = turn.RollOne;
 		}
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(
 				YACHT_SCORE_TURN,
@@ -89,15 +94,18 @@
 				turn = {};
 				options = [];
 				reloadGame();
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
 
 	const reloadGame = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(YACHT, { id: game.Id })
 			.then((result) => {
 				game = result.yacht;
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};

@@ -13,6 +13,7 @@
 	import HintList from './HintList.svelte';
 	import { userSession, type UserSessionData } from '$lib/user-session';
 	import { get } from 'svelte/store';
+	import { Loader } from '../../lib/loader';
 
 	let word: Word = {};
 	let game: GuessWord = {};
@@ -43,12 +44,14 @@
 	};
 
 	const getWord = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(WORD_RANDOM, { filter })
 			.then((result) => {
 				word = result.wordRandom;
 				wordLoaded = true;
 				gameLoaded = false;
+				Loader.set({ loading: false });
 				createGame();
 			})
 			.catch((e) => console.error(e));
@@ -56,17 +59,20 @@
 
 	const createGame = () => {
 		if (!word.Id) return;
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(GUESS_WORD_CREATE, { wordId: word.Id }, getHeaders())
 			.then((result) => {
 				game = result.guessWordCreate;
 				gameLoaded = true;
 				hints = [];
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
 
 	const createGuess = (event: any) => {
+		Loader.set({ loading: true });
 		const { Guess } = event.detail;
 		gameLoaded = false;
 		graphQlClient
@@ -77,6 +83,7 @@
 				if (game.Status != 'Playing') wordLoaded = false;
 				buildHintFilters();
 				getHints();
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};

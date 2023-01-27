@@ -29,6 +29,14 @@
 		Take some time to play a few games and think about the problem solving skills involved in
 		constucting them.
 	</div>
+	<div>
+		The register and sign in dialogs serve two purposes:
+		<ul>
+			<li>proof of concept for user management</li>
+			<li>scores will show a username rather than anonymous</li>
+		</ul>
+		No contact information is collected.
+	</div>
 	<div>The source code for both the games site and the GraphQL API are available upon request.</div>
 </div>
 
@@ -40,10 +48,13 @@
 		@apply font-bold text-lg mb-2;
 	}
 	div {
-		@apply mb-2;
+		@apply mb-4;
 	}
 	ul {
 		@apply list-disc list-inside;
+	}
+	li {
+		@apply ml-2;
 	}
 	a,
 	a:visited {

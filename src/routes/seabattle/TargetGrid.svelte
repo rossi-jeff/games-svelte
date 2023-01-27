@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { alphabet } from '$lib';
 	import { onMount, createEventDispatcher } from 'svelte';
+	import { GameStatus } from '../../graphql/types/game-status';
 	import type { SeaBattleTurn } from '../../graphql/types/sea-battle-turn';
 
 	export let axis: number = 8;
 	export let playerFired: boolean = false;
+	export let status: GameStatus = GameStatus.Playing;
 
 	const H = alphabet.toUpperCase().split('');
 	const V = [...Array(26).keys()].map((x) => x + 1);
@@ -103,33 +105,35 @@
 	<tfoot>
 		<tr>
 			<th colspan={axis + 1}>
-				{#if playerFired}
-					<button on:click={nextTurn}>Continue</button>
-				{:else}
-					<span>
-						<strong>Point</strong>
-						<select
-							name="horizontal"
-							id="horizontal-select"
-							bind:value={point.horizontal}
-							on:change={highLightPoint}
-						>
-							{#each horizontal as h}
-								<option value={h}>{h}</option>
-							{/each}
-						</select>
-						<select
-							name="vertical"
-							id="vertical-select"
-							bind:value={point.vertical}
-							on:change={highLightPoint}
-						>
-							{#each vertical as v}
-								<option value={v}>{v}</option>
-							{/each}
-						</select>
-					</span>
-					<button on:click={sendPoint}>Fire</button>
+				{#if status === GameStatus.Playing}
+					{#if playerFired}
+						<button on:click={nextTurn}>Continue</button>
+					{:else}
+						<span>
+							<strong>Point</strong>
+							<select
+								name="horizontal"
+								id="horizontal-select"
+								bind:value={point.horizontal}
+								on:change={highLightPoint}
+							>
+								{#each horizontal as h}
+									<option value={h}>{h}</option>
+								{/each}
+							</select>
+							<select
+								name="vertical"
+								id="vertical-select"
+								bind:value={point.vertical}
+								on:change={highLightPoint}
+							>
+								{#each vertical as v}
+									<option value={v}>{v}</option>
+								{/each}
+							</select>
+						</span>
+						<button on:click={sendPoint}>Fire</button>
+					{/if}
 				{/if}
 			</th>
 		</tr>

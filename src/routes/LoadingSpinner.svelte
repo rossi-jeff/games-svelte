@@ -6,8 +6,8 @@
 {#if $Loader.loading}
 	<div id="loader-overlay">
 		<div class="loader-display">
-			<SpinnerSolid class="w-36 h-36 mb-8 animate-spin" />
-			<div class="text-2xl text-black font-bold tracking-widest">Loading ...</div>
+			<SpinnerSolid class="w-36 h-36 mb-8 animate-spin text-blue-600" />
+			<div class="text-2xl text-blue-600 font-bold tracking-widest">Loading ...</div>
 		</div>
 	</div>
 {/if}

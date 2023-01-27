@@ -16,6 +16,9 @@
 	import type { SeaBattleTurn } from '../../graphql/types/sea-battle-turn';
 	import { userSession, type UserSessionData } from '$lib/user-session';
 	import { get } from 'svelte/store';
+	import { Loader } from '../../lib/loader';
+	import type { Target } from '../../graphql/types/target';
+	import type { GridPoint } from '../../graphql/types/grid-point';
 
 	let game: SeaBattle = {};
 	let ship: SeaBattleShip = {};
@@ -49,6 +52,7 @@
 	};
 
 	const createGame = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(SEA_BATTLE_CREATE, { axis }, getHeaders())
 			.then((result) => {
@@ -58,11 +62,13 @@
 				shipsToPlace = Object.values(ShipType);
 				editShips = true;
 				playing = true;
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
 
 	const reloadGame = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(SEA_BATTLE, { id })
 			.then((result) => {
@@ -76,6 +82,7 @@
 					displayPlayerShips(game.Ships);
 					console.log(game.Ships);
 				}
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
@@ -83,6 +90,7 @@
 	const createShip = (event: any) => {
 		const { type, points } = event.detail;
 		editShips = false;
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(
 				SEA_BATTLE_SHIP,
@@ -96,11 +104,13 @@
 				ship = result.seaBattleShip;
 				log(`Ship: ${ship.Type} created for  ${ship.Navy} navy at ${new Date()}`);
 				createOpponentShip(type);
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
 
 	const createOpponentShip = (type: string) => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(
 				SEA_BATTLE_SHIP,
@@ -115,12 +125,14 @@
 				ship = result.seaBattleShip;
 				log(`Ship: ${ship.Type} created for  ${ship.Navy} navy at ${new Date()}`);
 				reloadGame();
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
 
 	const playerTurn = (event: any) => {
 		const { horizontal, vertical } = event.detail;
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(
 				SEA_BATTLE_TURN,
@@ -138,47 +150,38 @@
 			)
 			.then((result) => {
 				turn = result.seaBattleTurn;
-				if (turn.ShipType) {
-					log(
-						`${turn.Navy} Turn: ${turn.Target} ${turn.ShipType} (${turn.GridPoint?.Horizontal}:${
-							turn.GridPoint?.Vertical
-						}) at ${new Date()}`
-					);
-				} else {
-					log(
-						`${turn.Navy} Turn: ${turn.Target} (${turn.GridPoint?.Horizontal}:${
-							turn.GridPoint?.Vertical
-						}) at ${new Date()}`
-					);
-				}
+				logTurn(turn.Navy, turn.Target, turn.GridPoint, turn.ShipType);
 				playerFired = true;
 				reloadGame();
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
 
 	const opponentTurn = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(SEA_BATTLE_TURN, { id, turn: { Navy: Navy.Opponent } }, getHeaders())
 			.then((result) => {
 				turn = result.seaBattleTurn;
-				if (turn.ShipType) {
-					log(
-						`${turn.Navy} Turn: ${turn.Target} ${turn.ShipType} (${turn.GridPoint?.Horizontal}:${
-							turn.GridPoint?.Vertical
-						}) at ${new Date()}`
-					);
-				} else {
-					log(
-						`${turn.Navy} Turn: ${turn.Target} (${turn.GridPoint?.Horizontal}:${
-							turn.GridPoint?.Vertical
-						}) at ${new Date()}`
-					);
-				}
+				logTurn(turn.Navy, turn.Target, turn.GridPoint, turn.ShipType);
 				opponentFired = true;
 				reloadGame();
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
+	};
+
+	const logTurn = (navy?: Navy, target?: Target, gridPoint?: GridPoint, shipType?: ShipType) => {
+		let message: string = '';
+		if (navy) message += `${navy}`;
+		if (target) message += ` Turn: ${target}`;
+		if (shipType) message += ` ${shipType}`;
+		if (gridPoint && gridPoint.Horizontal && gridPoint.Vertical) {
+			message += ` Point: ${gridPoint.Horizontal}:${gridPoint.Vertical}`;
+		}
+		message += ` at ${new Date()}`;
+		log(message);
 	};
 
 	const toggleMode = () => {
@@ -216,6 +219,7 @@
 				on:sendPoint={playerTurn}
 				on:nextTurn={toggleMode}
 				bind:displayTurns={displayPlayerTurns}
+				status={game.Status}
 				{axis}
 				{playerFired}
 			/>
@@ -225,6 +229,7 @@
 				bind:displayTurns={displayOpponentTurns}
 				on:opponentFire={opponentTurn}
 				on:nextTurn={toggleMode}
+				status={game.Status}
 				{axis}
 				{opponentFired}
 			/>

@@ -10,6 +10,7 @@
 	import GuessList from './GuessList.svelte';
 	import { userSession, type UserSessionData } from '$lib/user-session';
 	import { get } from 'svelte/store';
+	import { Loader } from '../../lib/loader';
 
 	let game: CodeBreaker = {};
 	let guess: CodeBreakerGuess = {};
@@ -26,6 +27,7 @@
 	};
 
 	const createGame = (event: any) => {
+		Loader.set({ loading: true });
 		const { colors, columns, selected } = event.detail;
 
 		availableColors = selected;
@@ -35,11 +37,13 @@
 			.request(CODE_BREAKER_CREATE, { colors, columns }, getHeaders())
 			.then((result) => {
 				game = result.codeBreakerCreate;
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
 
 	const createGuess = (event: any) => {
+		Loader.set({ loading: true });
 		const { colors } = event.detail;
 		const id = game.Id;
 		graphQlClient
@@ -48,16 +52,19 @@
 				guess = result.codeBreakerGuess;
 				if (!game.Guesses) game.Guesses = [];
 				game.Guesses.push(guess);
+				Loader.set({ loading: false });
 				reloadGame();
 			})
 			.catch((e) => console.error(e));
 	};
 
 	const reloadGame = () => {
+		Loader.set({ loading: true });
 		graphQlClient
 			.request(CODE_BREAKER, { id: game.Id })
 			.then((result) => {
 				game = result.codeBreaker;
+				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
 	};
