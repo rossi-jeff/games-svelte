@@ -9,6 +9,7 @@
 	import SolutionDisplay from '../../SolutionDisplay.svelte';
 	import { page } from '$app/stores';
 	import GuessDisplay from '../../GuessDisplay.svelte';
+	import { BackwardSolid } from 'svelte-awesome-icons';
 
 	let id = $page.params.id;
 
@@ -43,6 +44,12 @@
 	});
 </script>
 
+<div class="back-link">
+	<a href="/codebreaker/scores">
+		<BackwardSolid class="mr-2" /> BACK
+	</a>
+</div>
+
 <div class="code-breaker">
 	<div class="mb-2">
 		<strong>Status</strong>
@@ -74,5 +81,11 @@
 	}
 	h2 {
 		@apply text-lg font-bold;
+	}
+	div.back-link {
+		@apply mx-2 mb-4;
+	}
+	div.back-link a {
+		@apply flex;
 	}
 </style>

@@ -1,12 +1,14 @@
 <script lang="ts">
 	import type { CodeBreaker } from '../../../graphql/types/code-breaker';
 	import CodeBreakerItem from './CodeBreakerItem.svelte';
+	import { EyeSolid } from 'svelte-awesome-icons'
 
 	export let items: CodeBreaker[] = [];
 </script>
 
 <div class="code-breaker-items">
 	<div class="items-header">
+		<div><EyeSolid /></div>
 		<div class="user">User</div>
 		<div class="score">Score</div>
 		<div class="status">Status</div>

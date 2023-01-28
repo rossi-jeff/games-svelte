@@ -1,12 +1,14 @@
 <script lang="ts">
 	import type { GuessWord } from '../../../graphql/types/guess-word';
 	import GuessWordItem from './GuessWordItem.svelte';
+	import { EyeSolid } from 'svelte-awesome-icons';
 
 	export let items: GuessWord[] = [];
 </script>
 
 <div class="guess-word-items">
 	<div class="guess-words-header">
+		<div><EyeSolid /></div>
 		<div class="user">User</div>
 		<div class="score">Score</div>
 		<div class="word">Word</div>
