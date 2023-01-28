@@ -8,6 +8,9 @@ export const CODE_BREAKER = gql`
 			Colors
 			Score
 			Status
+			User {
+				UserName
+			}
 			Guesses {
 				Guess {
 					Color

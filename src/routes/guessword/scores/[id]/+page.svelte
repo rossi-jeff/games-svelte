@@ -74,4 +74,7 @@
 	div.guess-word {
 		@apply mx-2 border border-black rounded p-2;
 	}
+	h2 {
+		@apply text-lg font-bold;
+	}
 </style>

@@ -1,10 +1,16 @@
 <script lang="ts">
 	import type { HangMan } from '../../../graphql/types/hang-man';
+	import { EyeSolid } from 'svelte-awesome-icons';
 
 	export let item: HangMan = {};
 </script>
 
 <div class="hang-man-item">
+	<div>
+		<a href="/hangman/scores/{item.Id}">
+			<EyeSolid />
+		</a>
+	</div>
 	<div class="user">{item.User ? item.User.UserName : 'Anonymous'}</div>
 	<div class="score">{item.Score}</div>
 	<div class="correct">

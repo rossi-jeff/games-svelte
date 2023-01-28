@@ -52,17 +52,24 @@
 
 <div class="code-breaker">
 	<div class="mb-2">
+		<strong>User</strong>
+		{game.User ? game.User.UserName : 'Anonymous'}
+	</div>
+
+	<div class="mb-2">
 		<strong>Status</strong>
 		{#if game.Status}
 			{game.Status}
 		{/if}
 	</div>
+
 	<div class="mb-2">
 		<strong>Score</strong>
 		{#if game.Score}
 			{game.Score}
 		{/if}
 	</div>
+
 	{#if solution && solution.length}
 		<h2>Solution</h2>
 		<SolutionDisplay {solution} />
