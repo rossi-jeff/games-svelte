@@ -7,7 +7,7 @@
 	<div id="loader-overlay">
 		<div class="loader-display">
 			<SpinnerSolid class="w-36 h-36 mb-8 animate-spin text-blue-600" />
-			<div class="text-2xl text-blue-600 font-bold tracking-widest">Loading ...</div>
+			<div class="text-2xl text-blue-600 font-bold tracking-widest animate-bounce">Loading ...</div>
 		</div>
 	</div>
 {/if}

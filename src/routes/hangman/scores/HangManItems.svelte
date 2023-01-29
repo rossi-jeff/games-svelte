@@ -1,12 +1,14 @@
 <script lang="ts">
 	import type { HangMan } from '../../../graphql/types/hang-man';
 	import HangManItem from './HangManItem.svelte';
+	import { EyeSolid } from 'svelte-awesome-icons';
 
 	export let items: HangMan[] = [];
 </script>
 
 <div class="hang-man-items">
 	<div class="hang-man-header">
+		<div><EyeSolid /></div>
 		<div class="user">User</div>
 		<div class="score">Score</div>
 		<div class="correct">Correct</div>

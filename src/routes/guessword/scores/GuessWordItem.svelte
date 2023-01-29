@@ -1,10 +1,16 @@
 <script lang="ts">
 	import type { GuessWord } from '../../../graphql/types/guess-word';
+	import { EyeSolid } from 'svelte-awesome-icons';
 
 	export let item: GuessWord = {};
 </script>
 
 <div class="guess-word-item">
+	<div>
+		<a href="/guessword/scores/{item.Id}">
+			<EyeSolid />
+		</a>
+	</div>
 	<div class="user">{item.User ? item.User.UserName : 'Anonymous'}</div>
 	<div class="score">{item.Score}</div>
 	<div class="word">

@@ -15,6 +15,9 @@ export const YACHT = gql`
 				Score
 				Category
 			}
+			User {
+				UserName
+			}
 		}
 	}
 `;

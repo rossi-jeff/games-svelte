@@ -6,6 +6,7 @@ export const SEA_BATTLE = gql`
 			Id
 			Axis
 			Status
+			Score
 			CreatedAt
 			UpdatedAt
 			Ships {
@@ -30,6 +31,9 @@ export const SEA_BATTLE = gql`
 					Horizontal
 					Vertical
 				}
+			}
+			User {
+				UserName
 			}
 		}
 	}

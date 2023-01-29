@@ -1,12 +1,14 @@
 <script lang="ts">
 	import type { SeaBattle } from '../../../graphql/types/sea-battle';
 	import SeaBattleItem from './SeaBattleItem.svelte';
+	import { EyeSolid } from 'svelte-awesome-icons';
 
 	export let items: SeaBattle[] = [];
 </script>
 
 <div class="sea-battle-items">
 	<div class="sea-battle-header">
+		<div><EyeSolid /></div>
 		<div class="user">User</div>
 		<div class="score">Score</div>
 		<div class="status">Status</div>

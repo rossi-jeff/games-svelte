@@ -1,10 +1,16 @@
 <script lang="ts">
 	import type { SeaBattle } from '../../../graphql/types/sea-battle';
+	import { EyeSolid } from 'svelte-awesome-icons';
 
 	export let item: SeaBattle = {};
 </script>
 
 <div class="sea-battle-item">
+	<div>
+		<a href="/seabattle/scores/{item.Id}">
+			<EyeSolid />
+		</a>
+	</div>
 	<div class="user">{item.User ? item.User.UserName : 'Anonymous'}</div>
 	<div class="score">{item.Score}</div>
 	<div class="status">{item.Status}</div>

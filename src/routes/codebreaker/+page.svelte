@@ -11,11 +11,16 @@
 	import { userSession, type UserSessionData } from '$lib/user-session';
 	import { get } from 'svelte/store';
 	import { Loader } from '../../lib/loader';
+	import type { CodeBreakerCode } from '../../graphql/types/code-breaker-code';
+	import { CODE_BREAKER_SOLUTION } from '../../graphql/queries/code-breaker-solution';
+	import { GameStatus } from '../../graphql/types/game-status';
+	import SolutionDisplay from './SolutionDisplay.svelte';
 
 	let game: CodeBreaker = {};
 	let guess: CodeBreakerGuess = {};
 	let availableColors: string[] = [];
 	let availableColumns: number;
+	let solution: CodeBreakerCode[] = [];
 
 	let session: UserSessionData = get(userSession);
 
@@ -64,6 +69,18 @@
 			.request(CODE_BREAKER, { id: game.Id })
 			.then((result) => {
 				game = result.codeBreaker;
+				if (game.Status === GameStatus.Lost) getSolution();
+				Loader.set({ loading: false });
+			})
+			.catch((e) => console.error(e));
+	};
+
+	const getSolution = () => {
+		Loader.set({ loading: true });
+		graphQlClient
+			.request(CODE_BREAKER_SOLUTION, { id: game.Id })
+			.then((result) => {
+				solution = result.codeBreakerSolution;
 				Loader.set({ loading: false });
 			})
 			.catch((e) => console.error(e));
@@ -76,11 +93,15 @@
 
 {#if game && game.Status === 'Playing'}
 	<GuessForm {availableColors} {availableColumns} on:sendGuess={createGuess} />
-{:else}
-	<OptionsForm on:sendOptions={createGame} />
-	{#if game.Status}
-		<div class="ml-2">Status: {game.Status}</div>
+{:else if game.Status}
+	<div class="ml-2 my-2"><b>Status:</b> {game.Status}</div>
+	{#if solution && solution.length}
+		<SolutionDisplay {solution} />
 	{/if}
+{/if}
+
+{#if game && (!game.Status || game.Status != GameStatus.Playing)}
+	<OptionsForm on:sendOptions={createGame} />
 {/if}
 
 <div class="score-link">

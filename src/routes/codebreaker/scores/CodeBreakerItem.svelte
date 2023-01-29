@@ -1,10 +1,16 @@
 <script lang="ts">
 	import type { CodeBreaker } from '../../../graphql/types/code-breaker';
+	import { EyeSolid } from 'svelte-awesome-icons';
 
 	export let item: CodeBreaker = {};
 </script>
 
 <div class="code-breaker">
+	<div>
+		<a href="/codebreaker/scores/{item.Id}">
+			<EyeSolid />
+		</a>
+	</div>
 	<div class="user">{item.User ? item.User.UserName : 'Anonymous'}</div>
 	<div class="score">{item.Score}</div>
 	<div class="status">{item.Status}</div>
