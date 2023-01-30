@@ -44,6 +44,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Hang Man</title>
+</svelte:head>
+
 <div class="back-link">
 	<a href="/hangman/scores">
 		<BackwardSolid class="mr-2" /> BACK

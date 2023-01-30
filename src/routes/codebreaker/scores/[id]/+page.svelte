@@ -44,6 +44,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Code Breaker</title>
+</svelte:head>
+
 <div class="back-link">
 	<a href="/codebreaker/scores">
 		<BackwardSolid class="mr-2" /> BACK

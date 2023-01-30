@@ -41,6 +41,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Sea Battle</title>
+</svelte:head>
+
 <div class="sea-battle-scores">
 	<h2>Sea Battle Scores</h2>
 	{#if pagedResults.Items && pagedResults.Items.length}

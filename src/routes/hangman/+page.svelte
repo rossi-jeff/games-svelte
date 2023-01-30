@@ -135,6 +135,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Hang Man</title>
+</svelte:head>
+
 <div id="hangman-graphic">
 	<div id="gallows-top" />
 	<div id="gallows-side" />

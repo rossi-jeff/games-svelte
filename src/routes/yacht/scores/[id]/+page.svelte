@@ -29,6 +29,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Yacht</title>
+</svelte:head>
+
 <div class="back-link">
 	<a href="/yacht/scores">
 		<BackwardSolid class="mr-2" /> BACK

@@ -41,6 +41,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Guess Word</title>
+</svelte:head>
+
 <div class="guess-word-scores">
 	<h2>Guess Word Scores</h2>
 	{#if pagedResults && pagedResults.Items && pagedResults.Items.length}
