@@ -29,6 +29,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Guess Word</title>
+</svelte:head>
+
 <div class="back-link">
 	<a href="/guessword/scores">
 		<BackwardSolid class="mr-2" /> BACK

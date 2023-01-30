@@ -41,6 +41,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Hang Man</title>
+</svelte:head>
+
 <div class="hang-man-scores">
 	<h2>Hangman Scores</h2>
 	{#if pagedResults.Items && pagedResults.Items.length}

@@ -49,6 +49,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Code Breaker</title>
+</svelte:head>
+
 <div class="code-breaker-scores">
 	<h2>Code Breaker Scores</h2>
 	{#if pagedResults && pagedResults.Items && pagedResults.Items.length}

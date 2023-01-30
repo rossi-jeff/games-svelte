@@ -111,6 +111,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Yacht</title>
+</svelte:head>
+
 {#if game && game.Id && turn && !turn.RollOne && (!game.Turns || (game.Turns && game.Turns.length < 12))}
 	<div class="first-roll">
 		<button on:click={firstRoll}>First Roll</button>

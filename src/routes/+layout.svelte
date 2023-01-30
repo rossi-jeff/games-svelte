@@ -6,6 +6,10 @@
 	import PageTitle from './PageTitle.svelte';
 </script>
 
+<svelte:head>
+	<title>Games by Jeff Rossi</title>
+</svelte:head>
+
 <LoadingSpinner />
 
 <PageTitle />
@@ -16,10 +20,15 @@
 	<slot />
 </div>
 
+<div class="spacer" />
+
 <Footer />
 
 <style>
 	div.body-scroller {
 		@apply overflow-y-auto;
+	}
+	div.spacer {
+		@apply h-24;
 	}
 </style>

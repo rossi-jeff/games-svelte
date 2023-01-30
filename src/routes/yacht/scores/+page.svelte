@@ -41,6 +41,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Yacht</title>
+</svelte:head>
+
 <div class="yacht-scores">
 	<h2>Yacht Scores</h2>
 	{#if pagedResults.Items && pagedResults.Items.length}

@@ -141,6 +141,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Guess Word</title>
+</svelte:head>
+
 {#if gameLoaded}
 	<GuessList {game} />
 {/if}

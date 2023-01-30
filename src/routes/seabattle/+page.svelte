@@ -204,6 +204,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Sea Battle</title>
+</svelte:head>
+
 {#if playing}
 	{#if shipsToPlace.length > 0}
 		<ShipPlacementGrid

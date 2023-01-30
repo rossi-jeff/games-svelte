@@ -87,6 +87,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Code Breaker</title>
+</svelte:head>
+
 {#if game && game.Guesses}
 	<GuessList guesses={game.Guesses} />
 {/if}

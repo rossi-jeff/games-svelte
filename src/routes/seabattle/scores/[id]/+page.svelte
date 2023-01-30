@@ -34,6 +34,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Sea Battle</title>
+</svelte:head>
+
 <div class="back-link">
 	<a href="/seabattle/scores">
 		<BackwardSolid class="mr-2" /> BACK
